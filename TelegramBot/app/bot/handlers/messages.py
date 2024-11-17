@@ -2,7 +2,7 @@ import threading
 from time import sleep
 from app.bot.handlers import waiting_for_response
 from utils.tokens import validate_count_tokens
-from app.bot import bot
+from config import bot
 
 # Обработка голосового сообщения
 @bot.message_handler(content_types=['voice'])
