@@ -1,18 +1,20 @@
 import threading
 from time import sleep
 from app.bot.handlers import waiting_for_response
-from utils.functions import count_tokens
+from utils.tokens import validate_count_tokens
 from app.bot import bot
 
-
+# Обработка голосового сообщения
 @bot.message_handler(content_types=['voice'])
 def handle_voice_message(message):
     print("Голосовое сообщение")
 
+# Обработка изображения
 @bot.message_handler(content_types=['photo'])
 def handle_photo_and_text(message):
     print("Изображение от пользователя")
 
+# Обработка сообщения
 @bot.message_handler()
 def texts(message):
     print(123)
@@ -30,12 +32,11 @@ def texts(message):
         bot.send_message(message.chat.id, "Ошибка: не удалось загрузить конфигурацию.")
         return
 
-    if count_tokens(message.text) >= 500:
+    if validate_count_tokens(message.text, 500):
         bot.send_message(message.chat.id, "Ваше сообщение слишком большое")
         return
 
-
-    if count_tokens(message.text) <= 100:
+    if validate_count_tokens(message.text, 100):
         memory = user_data.get('memory', [])  # Загружаем память пользователя
 
         for word in ["запомни", "сохрани", "не забудь","Запомни", "Сохрани", "Не забудь"]:

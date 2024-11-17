@@ -9,3 +9,16 @@ def count_tokens(text):
     """
     tokens = tokenizer.encode(text)
     return len(tokens)*1.045
+
+def validate_count_tokens(text, tokens):
+    """
+     Проверяет количество токенов в тексте.
+
+     :param text: Текст для подсчёта
+     :return: bool.
+     """
+    if text is not None and tokens is not None:
+        if count_tokens(text) >= tokens: return True
+        else: return False
+    else:
+        return None
