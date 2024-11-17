@@ -1,4 +1,4 @@
-from save_load import load_user_data, load_document_data
+from utils.save_load import load_user_data, load_document_data
 
 def search_by_header(header, user_id):
     """
@@ -6,6 +6,9 @@ def search_by_header(header, user_id):
     :param header: заголовок для поиска
     :return: строки, связанные с заголовком
     """
+
+    if header is None:
+        return "Не удалось получить информацию"
 
     result = ""
     document = load_document_data()
@@ -18,6 +21,7 @@ def search_by_header(header, user_id):
     print("header: ", header)
 
     for el in header:
+        print(document)
         for item in document[user["category_dialog"]]:
             for key, value in item.items():
                 if key == el:

@@ -2,9 +2,10 @@ import threading
 from time import sleep
 from app.bot.handlers import waiting_for_response
 from llm.prompt_manager import process_user_request, include_headers
-from utils.document_utils import search_by_header
+from utils.document_utils import search_by_header, extract_headers
 from utils.tokens import validate_count_tokens
 from config import bot
+from utils.save_load import load_user_data
 
 # Обработка голосового сообщения
 @bot.message_handler(content_types=['voice'])
@@ -28,7 +29,7 @@ def texts(message):
         bot.send_message(message.chat.id, "Пожалуйста, подождите, пока я обработаю ваш предыдущий запрос.")
         return
 
-    user_data = None #Загрузка данных пользователя из БД!!!
+    user_data = load_user_data(user_id) #Загрузка данных пользователя из БД!!!
 
     if user_data is None:
         print("Ошибка: не удалось загрузить конфигурацию.")
@@ -62,17 +63,20 @@ def texts(message):
     waiting_for_response[user_id] = True
     sent_message = bot.send_message(message.chat.id, "Ваш запрос отправлен, ожидайте ответа.")
     save_message = [sent_message.message_id, message.chat.id]
-    thread = threading.Thread(target=handle_user_message, args=(message, user_id))
+    thread = threading.Thread(target=handle_user_message, args=(message,))
     thread.start()
     typing_thread = threading.Thread(target=send_typing_action, args=(message.chat.id, user_id))
     typing_thread.start()
 
-def handle_user_message(message, user_id):
+def handle_user_message(message):
     if message.text:
-        llm_headers = include_headers(message.text) # Извлечение заголовков LLM моделью
-        doc_text = search_by_header(llm_headers, user_id) # Поиск информации в документе по заголовкам
+        user_id = message.from_user.id
+        headers = extract_headers(user_id)
+        llm_headers = include_headers(message.text, headers) # Извлечение заголовков LLM моделью
+        doc_text = search_by_header(llm_headers["commands"], user_id) # Поиск информации в документе по заголовкам
         llm_answer = process_user_request(message.text, doc_text) # Формирование ответа LLM пользователю
         bot.send_message(message.chat.id, llm_answer)
+        waiting_for_response[user_id] = False
 
 def send_typing_action(chat_id, user_id):
     while waiting_for_response.get(user_id, False):
