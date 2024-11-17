@@ -65,7 +65,7 @@ def process_request(data):
         print("Ошибка при выполнении запроса:", str(e))
         return None
 
-def process_user_request(user_text):
+def process_user_request(user_text, document_text):
     """Функция формирования ответа от LLM пользователю
     :param user_text: Запрос пользователя
     """
@@ -78,7 +78,8 @@ def process_user_request(user_text):
                     "Отвечай исключительно на русском языке.",
 
         user_instructions= "Ты — профессиональный консультант по госуслугам. Ответь на запрос пользователя\n"
-                            f"Запрос пользователя: {user_text} ="
+                            f"Предоставленная информация из документа: {document_text}\n"
+                            f"Запрос пользователя: {user_text}"
     )
 
     result_request = process_request(data)
