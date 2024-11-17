@@ -1,8 +1,9 @@
 import threading
 from time import sleep
 from app.bot.handlers import waiting_for_response
+from llm.prompt_manager import process_user_request
 from utils.tokens import validate_count_tokens
-from app.bot import bot
+from config import bot
 
 # Обработка голосового сообщения
 @bot.message_handler(content_types=['voice'])
@@ -29,8 +30,8 @@ def texts(message):
     user_data = None #Загрузка данных пользователя из БД!!!
 
     if user_data is None:
-        bot.send_message(message.chat.id, "Ошибка: не удалось загрузить конфигурацию.")
-        return
+        print("Ошибка: не удалось загрузить конфигурацию.")
+        #return
 
     if validate_count_tokens(message.text, 500):
         bot.send_message(message.chat.id, "Ваше сообщение слишком большое")
@@ -60,13 +61,15 @@ def texts(message):
     waiting_for_response[user_id] = True
     sent_message = bot.send_message(message.chat.id, "Ваш запрос отправлен, ожидайте ответа.")
     save_message = [sent_message.message_id, message.chat.id]
-    thread = threading.Thread(target=process_user_request, args=(message,))
+    thread = threading.Thread(target=handle_user_message, args=(message,))
     thread.start()
     typing_thread = threading.Thread(target=send_typing_action, args=(message.chat.id, user_id))
     typing_thread.start()
 
-def process_user_request():
-    print("Переделать функцию обработки запроса")
+def handle_user_message(message):
+    if message.text:
+        llm_answer = process_user_request(message.text)
+        bot.send_message(message.chat.id, llm_answer)
 
 def send_typing_action(chat_id, user_id):
     while waiting_for_response.get(user_id, False):

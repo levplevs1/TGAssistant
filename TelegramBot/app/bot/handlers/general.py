@@ -1,4 +1,4 @@
-from app.bot import bot
+from config import bot
 from telebot import types
 
 @bot.message_handler(commands=['start'])

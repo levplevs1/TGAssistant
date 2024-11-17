@@ -1,4 +1,4 @@
-from app.bot import bot
+from config import bot
 from time import sleep
 from app.bot.handlers import general, messages
 
