@@ -1,6 +1,9 @@
 from config import bot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from utils.save_load import save_category_dialog
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+
+from llm.prompt_manager import get_variants
+from utils.save_load import save_category_dialog, get_last_message
+
 
 # Команда для отображения кнопок
 @bot.message_handler(commands=["menu"])
@@ -33,5 +36,26 @@ def handle_callback(call):
     elif call.data == "Транспорт":
         save_category_dialog(call.from_user.id, call.data)
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: Транспорт")
+
+def get_keyboard(user_id):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+
+    last_message = get_last_message(user_id)
+    variants = get_variants(last_message)
+
+    # Добавляем кнопки
+    button1 = KeyboardButton(variants[0])
+    button2 = KeyboardButton(variants[1])
+    button3 = KeyboardButton(variants[2])
+    button4 = KeyboardButton("Ещё варианты")
+    button5 = KeyboardButton("Изменить ответ")
+
+    # Добавляем кнопки в клавиатуру
+    keyboard.add(button4, button5)
+    keyboard.add(button1)
+    keyboard.add(button2)
+    keyboard.add(button3)
+
+    return keyboard
 
 

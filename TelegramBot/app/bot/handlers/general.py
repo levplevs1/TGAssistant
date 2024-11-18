@@ -19,7 +19,9 @@ def starter(message):
         user_data = {
             'user_id': user_id,
             'first_name': user_first_name,
-            'category_dialog': ""
+            'category_dialog': "",
+            'memory': [],
+            'memory_chat': []
         }
         save_user_data(user_id, user_data)
         bot.send_message(message.chat.id, f'Здравствуйте {user_first_name}, ваш конфигурационный файл создан!')

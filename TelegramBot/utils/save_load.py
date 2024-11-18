@@ -32,3 +32,39 @@ def save_category_dialog(user_id, category_dialog):
     user_data["category_dialog"] = category_dialog
     save_user_data(user_id, user_data)
 
+def save_memory_chat(message, answer):
+    memory_chat = load_user_data(message.from_user.id)
+    if len(memory_chat["memory_chat"]) > 18:
+        memory_chat["memory_chat"].pop(0)
+        memory_chat["memory_chat"].pop(0)
+
+    memory_chat["memory_chat"].append(message.text)
+    memory_chat["memory_chat"].append(answer)
+    save_user_data(message.from_user.id,memory_chat)
+
+def get_document():
+    config_file = path.join('document_data.json')
+    if path.exists(config_file):
+        with open(config_file, 'r', encoding="utf-8") as f:
+            return load(f)
+    else:
+        return None
+
+def get_last_message(user_id):
+    """
+        Загружает текущую память пользователя из конфига и передает её в виде строки для использования в промпте.
+
+        :param user_id: Идентификатор пользователя
+        :return: Строка памяти для передачи в промпт
+        """
+
+    user_data = load_user_data(user_id)
+    memory_chat = user_data["memory_chat"]
+    memory_chat.reverse()  # Изменяем список
+
+    for i in range(len(memory_chat)):
+        if i % 2 != 0:
+            if memory_chat[i] != "Ещё варианты" and memory_chat[i] != "Изменить ответ":
+                return memory_chat[i]
+    return None
+
