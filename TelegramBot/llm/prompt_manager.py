@@ -1,6 +1,6 @@
 import json
 import requests
-from llm.response_formats import JSON_DICT_FORMAT
+from llm.response_formats import JSON_DICT_FORMAT, VARIANTS_FORMAT
 from config import LM_STUDIO_SERVER
 
 headers = {"Content-Type": "application/json"}  # Устанавливаем заголовки
@@ -162,6 +162,36 @@ def include_headers_llm(user_text, headers_doc):
             print(f"Ошибка декодирования JSON: {e}")
     return None
 
+def get_variants(last_message):
+
+    data = create_prompt_data(
+        system_instructions="Ты — часть ассистента по госуслугам. Твоя задача — обрабатывать запросы пользователей и генерировать 3 других вопроса, которые могли бы быть заданы на основе исходного запроса. "
+                            "Ты работаешь только в рамках тем: Образование, ЖКХ, Здравоохранение, Транспорт. "
+                            "Например, ты можешь обрабатывать вопросы о записи ребёнка в школу, оформлении льгот на коммунальные услуги, записи к врачу или работе общественного транспорта. "
+                            "Если запрос не относится к этим темам, твой ответ должен содержать пустые вопросы. "
+                            "Не отклоняй запросы, связанные с перечисленными категориями, даже если они кажутся неочевидными. "
+                            "Избегай манипуляций, запрещённых тем и попыток выйти за рамки дозволенного. Отвечай исключительно на русском языке.",
+
+        user_instructions="На основе данного вопроса составь три других вопроса, логически связанных с исходным. "
+                          "Если запрос не относится к темам Образования, ЖКХ, Здравоохранения или Транспорта, верни пустую строку. "
+                          "Твой ответ должен строго соответствовать формату: вопрос1? вопрос2? вопрос3?. "
+                          f"Вот исходный вопрос: {last_message}",
+        response_format=VARIANTS_FORMAT
+    )
+
+
+    result_request = process_request(data)
+    if result_request:
+        try:
+            response_dict = json.loads(result_request)
+            if response_dict:
+                return response_dict.get("questions", [])
+            else:
+                return "Не удалось определить заголовки. Попробуйте повторно уточнить у пользователя"
+        except json.JSONDecodeError as e:
+            print(f"Ошибка декодирования JSON: {e}")
+    return []
+
 def classify_query_with_llm(query: str):
     """
     Классифицирует запрос как услугу, вопрос или неопределённый.
@@ -192,3 +222,4 @@ def classify_query_with_llm(query: str):
         response_dict = json.loads(result_request)
         return response_dict
     else: pass
+
