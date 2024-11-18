@@ -1,6 +1,6 @@
 import json
 import requests
-from llm.response_formats import JSON_DICT_FORMAT
+from llm.response_formats import JSON_DICT_FORMAT, MEMORY_VALIDATION_JSON_FORMAT
 from config import LM_STUDIO_SERVER
 
 headers = {"Content-Type": "application/json"}  # Устанавливаем заголовки
@@ -183,7 +183,7 @@ def classify_query_with_llm(query: str):
         "  'confidence': 'число от 0 до 1, показывающее уверенность модели'\n"
         "}\n",
         user_instructions=f"Запрос пользователя: {query}",
-        max_tokens=200,
+        max_tokens=100,
         temperature=0.3
     )
 
@@ -192,3 +192,43 @@ def classify_query_with_llm(query: str):
         response_dict = json.loads(result_request)
         return response_dict
     else: pass
+
+def memory_validation_llm(query: str):
+    data = create_prompt_data(
+    system_instructions =
+        "Ты — профессиональный ассистент по проверке данных, предназначенных для сохранения в память. "
+        "Твоя задача — профессионально и корректно оценивать данные, которые пользователь хочет сохранить, и возвращать результат в формате JSON. "
+        "Следуй этим правилам:\n"
+        "1. Проверяй, соответствует ли текст этическим и профессиональным стандартам.\n"
+        "2. Если текст содержит личные данные, проверь, уместно ли их сохранение.\n"
+        "3. Если текст содержит непристойные выражения, провокации, незаконные запросы или ненормативную лексику, отклони сохранение.\n"
+        "4. Старайся минимизировать текст для сохранения, удаляя лишние детали, но сохраняя суть.\n"
+        "5. Если текст уместен для сохранения, возвращай сжатый текст. Если нет, возвращай сообщение, что сохранение невозможно.\n"
+        "6. Всегда отвечай на русском языке.",
+    user_instructions =
+        f"Данные для проверки:\n{query}\n\n"
+        "Верни JSON с двумя полями:\n"
+        "1. 'is_acceptable' — логическое значение, указывающее, можно ли сохранить данные (True или False).\n"
+        "2. 'compressed_text' — если данные приемлемы, верни сжатую версию текста. Если данные не подходят для сохранения, оставь поле пустым.\n\n"
+        "Пример формата ответа:\n"
+        "{\n"
+        "  'is_acceptable': True,\n"
+        "  'compressed_text': 'Сжатая версия текста для сохранения.'\n"
+        "}",
+    response_format=MEMORY_VALIDATION_JSON_FORMAT,
+    max_tokens = 50,
+    temperature= 0.3
+    )
+
+    result_request = process_request(data)
+    if result_request:
+        try:
+            response_dict = json.loads(result_request)
+            print(response_dict)
+            if response_dict:
+                return response_dict
+            else:
+                return
+        except json.JSONDecodeError as e:
+            print(f"Ошибка декодирования JSON: {e}")
+    return None
