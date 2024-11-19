@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{FD32D46A-51E6-45EF-8D3D-EC5A797F40DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{55BC742F-0986-4FB1-A6AF-A32C26A9392B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{124C2B5D-6BC8-457C-B69F-08096C19F789}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{42EDE975-FE63-43EE-A1CB-C170C201BF94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBot.Domain", "TelegramBot.Domain\TelegramBot.Domain.csproj", "{1D10EAC1-0546-4D5C-ACF4-638E430FD6D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBot.Application", "TelegramBot.Application\TelegramBot.Application.csproj", "{D99774EF-4B15-4C33-B2AC-9016C43C0B0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBot.Persistence", "TelegramBot.Persistence\TelegramBot.Persistence.csproj", "{8E7A1E22-B57D-4774-AE82-E8F79FF381AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBot.WebApi", "TelegramBot.WebApi\TelegramBot.WebApi.csproj", "{2A910C2F-4E32-44A0-9E07-5BC8FF58032C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBot.Tests", "TelegramBot.Tests\TelegramBot.Tests.csproj", "{445AE1BD-F4D6-4F8D-8C8A-0641EF95C3F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D10EAC1-0546-4D5C-ACF4-638E430FD6D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D10EAC1-0546-4D5C-ACF4-638E430FD6D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D10EAC1-0546-4D5C-ACF4-638E430FD6D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D10EAC1-0546-4D5C-ACF4-638E430FD6D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D99774EF-4B15-4C33-B2AC-9016C43C0B0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99774EF-4B15-4C33-B2AC-9016C43C0B0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99774EF-4B15-4C33-B2AC-9016C43C0B0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99774EF-4B15-4C33-B2AC-9016C43C0B0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E7A1E22-B57D-4774-AE82-E8F79FF381AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E7A1E22-B57D-4774-AE82-E8F79FF381AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E7A1E22-B57D-4774-AE82-E8F79FF381AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E7A1E22-B57D-4774-AE82-E8F79FF381AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A910C2F-4E32-44A0-9E07-5BC8FF58032C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A910C2F-4E32-44A0-9E07-5BC8FF58032C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A910C2F-4E32-44A0-9E07-5BC8FF58032C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A910C2F-4E32-44A0-9E07-5BC8FF58032C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445AE1BD-F4D6-4F8D-8C8A-0641EF95C3F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445AE1BD-F4D6-4F8D-8C8A-0641EF95C3F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445AE1BD-F4D6-4F8D-8C8A-0641EF95C3F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445AE1BD-F4D6-4F8D-8C8A-0641EF95C3F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1D10EAC1-0546-4D5C-ACF4-638E430FD6D1} = {FD32D46A-51E6-45EF-8D3D-EC5A797F40DE}
+		{D99774EF-4B15-4C33-B2AC-9016C43C0B0C} = {FD32D46A-51E6-45EF-8D3D-EC5A797F40DE}
+		{8E7A1E22-B57D-4774-AE82-E8F79FF381AE} = {55BC742F-0986-4FB1-A6AF-A32C26A9392B}
+		{2A910C2F-4E32-44A0-9E07-5BC8FF58032C} = {124C2B5D-6BC8-457C-B69F-08096C19F789}
+		{445AE1BD-F4D6-4F8D-8C8A-0641EF95C3F3} = {42EDE975-FE63-43EE-A1CB-C170C201BF94}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2838BDEC-C476-4612-B4F7-8C5882C16343}
+	EndGlobalSection
+EndGlobal
