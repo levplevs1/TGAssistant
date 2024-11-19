@@ -1,22 +1,3 @@
-DEFAULT_RESPONSE_FORMAT = {
-    "type": "json_schema",
-    "json_schema": {
-        "type": "array",
-        "items": {"type": "string"}
-    }
-}
-
-JSON_OBJECT_SCHEMA = {
-    "type": "json_schema",
-    "json_schema": {
-        "type": "object",
-        "properties": {
-            "key1": {"type": "string"},
-            "key2": {"type": "number"}
-        }
-    }
-}
-
 JSON_DICT_FORMAT = {
     "type": "json_schema",
     "json_schema": {
@@ -206,6 +187,39 @@ METER_READINGS_FORMAT = {
     }
   }
 }
+
+
+CLASSIFY_QUERY_FORMAT = {
+  "type": "json_schema",
+  "json_schema": {
+    "name": "query_classification_response",
+    "strict": True,
+    "schema": {
+      "type": "object",
+      "properties": {
+        "query_type": {
+          "type": "string",
+          "enum": ["услуга", "вопрос", "неопределённый"],
+          "description": "Тип запроса, определённый классификатором."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Краткая причина классификации, объясняющая выбор категории.",
+          "example": "Запрос содержит действие и объект услуги: ключевое слово 'оплати'."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Уверенность модели в классификации запроса по шкале от 0 до 1.",
+          "example": 0.85
+        }
+      },
+      "required": ["query_type", "reason", "confidence"]
+    }
+  }
+}
+
 
 
 

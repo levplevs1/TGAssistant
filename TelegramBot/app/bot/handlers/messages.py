@@ -12,7 +12,6 @@ from utils.tokens import validate_count_tokens
 from config import bot
 from utils.save_load import load_user_data, save_memory_chat, get_last_message, save_user_data
 
-
 # Обработка голосового сообщения
 @bot.message_handler(content_types=['voice'])
 def handle_voice_message(message):
@@ -92,32 +91,56 @@ def texts(message):
 
     forming_response(user_id, message)
 
+
 def handle_user_message(message):
     start_time = time()
+    sent_message = bot.send_message(message.chat.id, "Думаю... Определяю обращение")
+
+    # Создаём разделяемую переменную для текста
+    shared_text = SharedText("Думаю... Определяю обращение")
+
+    # Запуск анимации в отдельном потоке
+    thread = threading.Thread(target=animate_status_typing, args=(sent_message, shared_text))
+    thread.start()
+
     print(start_time)
+    print(f"Сообщение пользователя: {message.text}")
     user_id = message.from_user.id
     if message.text:
         classify_type = classify_type_llm(message.text)
+
+        # Тип запроса - услуга
         if classify_type:
+            shared_text.update_text("Рассматриваю запрос на услугу")
+            if sent_message.text != "Рассматриваю запрос на услугу":  # Проверка перед редактированием
+                bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Рассматриваю запрос на услугу")
             meter_readings = get_meter_readings_llm(message.text)
-            # Тип запроса - услуга
             if meter_readings['category'] != 'unknown':
                 users_status_service[user_id] = meter_readings['category']
                 process_callback_data(user_id, message.chat.id, users_status_service[user_id], meter_readings)
+
+                bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
             else:
+                shared_text.update_text("Выберите услугу:")
                 markup = get_markup_services()
                 bot.send_message(message.chat.id, "Выберите услугу:", reply_markup=markup)
         else:
+            shared_text.update_text("Формирую ответ на вопрос")
+            if sent_message.text != "Формирую ответ на вопрос":  # Проверка перед редактированием
+                bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Формирую ответ на вопрос")
+
             # Тип запроса - вопрос
             process_query(user_id, message)
+
+            bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
     end_time = time()
     result_time = end_time - start_time
     print(f"Время обработки: {result_time}")
     waiting_for_response[user_id] = False
 
+
 def forming_response(user_id, message):
     waiting_for_response[message.from_user.id] = True
-    sent_message = bot.send_message(message.chat.id, "Ваш запрос отправлен, ожидайте ответа.")
     thread = threading.Thread(target=handle_user_message, args=(message,))
     thread.start()
     typing_thread = threading.Thread(target=send_typing_action, args=(message.chat.id, message.from_user.id))
@@ -136,3 +159,51 @@ def send_typing_action(chat_id, user_id):
     while waiting_for_response.get(user_id, False):
         bot.send_chat_action(chat_id, 'typing')
         sleep(2)  # Отправляем статус каждые 2 секунды
+
+
+# Разделяемая переменная для анимации
+class SharedText:
+    def __init__(self, text):
+        self.text = text
+        self.lock = threading.Lock()
+
+    def update_text(self, new_text):
+        with self.lock:
+            self.text = new_text
+
+    def get_text(self):
+        with self.lock:
+            return self.text
+
+def animate_status_typing(sent_message, shared_text, change_time=0.5):
+    """
+    Анимация статуса печати сообщения.
+
+    Аргументы:
+        sent_message: Сообщение, которое будет редактироваться.
+        shared_text: Разделяемая переменная с текстом для анимации.
+        change_time: Время задержки между анимациями.
+    """
+    try:
+        reverse_animate_typing = False
+        while sent_message is not None:
+            base_text = shared_text.get_text()  # Получаем актуальный текст
+            if not reverse_animate_typing:
+                for i in range(1, 4):  # Цикл для добавления точек
+                    bot.edit_message_text(
+                        chat_id=sent_message.chat.id,
+                        message_id=sent_message.message_id,
+                        text=base_text + "." * i
+                    )
+                    sleep(change_time)
+                reverse_animate_typing = True
+            else:
+                bot.edit_message_text(
+                    chat_id=sent_message.chat.id,
+                    message_id=sent_message.message_id,
+                    text=base_text
+                )
+                sleep(change_time)
+                reverse_animate_typing = False
+    except Exception:
+        print("Предупреждение. Текст для изменения анимации не найден")

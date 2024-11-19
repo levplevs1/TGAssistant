@@ -5,10 +5,15 @@ from app.bot.handlers import users_status_service
 from llm.prompt_manager import classify_query_with_llm
 from config import bot
 
-def classify_type_llm(query: str):
+def classify_type_llm(query: str, comment_text='', retry_count=0, max_retries=3):
     try:
+        # Проверка на превышение количества попыток
+        if retry_count > max_retries:
+            print("Превышено максимальное количество попыток. Возвращаю None.")
+            return None
+
         # Вызов LLM для уточнения
-        response_classify = classify_query_with_llm(query)
+        response_classify = classify_query_with_llm(query, comment_text)
 
         # Проверка результата LLM
         if response_classify:
@@ -37,8 +42,9 @@ def classify_type_llm(query: str):
             return False
 
     except Exception as e:
-        print(f"Ошибка при классификации: {e}")
-    return False
+        print(f"Ошибка при классификации: {e}\n Повторная попытка с комментарием для модели...")
+        # Увеличение счётчика повторов
+        return classify_type_llm(query, comment_text="Внимание: предыдущее описание причины было слишком большое, что вызвало ошибку. Сократи причину.", retry_count=retry_count + 1, max_retries=max_retries)
 
 def save_to_json(data):
     """
@@ -105,8 +111,10 @@ def process_callback_data(user_id, chat_id, data, classify_type):
     if data in categories:
         category = categories[data]
         check_result = category["check"](classify_type["data"])
+        check_error = classify_type.get("error", False)
+        print(f"Check error:{check_error}")
 
-        if not check_result:  # Если данные не прошли проверку
+        if not check_result or check_error is True:  # Если данные не прошли проверку
             fail_message = (
                 category["fail_message"](classify_type["data"])
                 if callable(category["fail_message"])
