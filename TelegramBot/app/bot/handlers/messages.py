@@ -1,8 +1,9 @@
 import json
 import threading
 from time import sleep, time
-from app.bot.handlers import waiting_for_response
-from app.bot.handlers.murkup_button import get_keyboard, send_categories
+from app.bot.handlers import waiting_for_response, users_status_service
+from app.bot.handlers.murkup_button import get_keyboard, send_categories, get_markup_counters, get_markup_services
+from classifier.base_classifier import process_callback_data
 from classifier.base_classifier import classify_type_llm
 from llm.prompt_manager import process_user_request, include_headers_llm, memory_validation_llm
 from utils.document_utils import search_by_header, extract_headers
@@ -27,6 +28,11 @@ def texts(message):
     print(123)
     global save_message
     user_id = message.from_user.id
+
+    # Проверяем оказывается ли услуга пользователю
+    if users_status_service.get(user_id, False):
+        bot.send_message(message.chat.id, "Производится оказание услуги")
+        return
 
     # Проверяем, ожидает ли пользователь ответа
     if waiting_for_response.get(user_id, False):
@@ -87,13 +93,30 @@ def texts(message):
 def handle_user_message(message):
     start_time = time()
     print(start_time)
+
     if message.text:
         user_id = message.from_user.id
-
-        classify_type = classify_type_llm(message.text)
+        classify_type = {
+    'category': 'unknown',
+    'data': {
+        'горячая_вода': None,
+        'холодная_вода': None,
+        'день': None,
+        'ночь': None,
+        'тепло': None,
+        'объём': None
+    },
+    'error': False,
+    'message': None
+}
         # Тип запроса - услуга
-        if classify_type is True:
-            bot.send_message(message.chat.id, "Услуга")
+        if classify_type['category'] != 'unknown':
+            users_status_service[user_id] = classify_type['category']
+            process_callback_data(user_id, message.chat.id, users_status_service[user_id], classify_type)
+
+        elif classify_type['category'] == 'unknown':
+            markup = get_markup_services()
+            bot.send_message(message.chat.id, "Выберите услугу:", reply_markup=markup)
 
         # Тип запроса не определён
         elif classify_type is None:

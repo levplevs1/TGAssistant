@@ -1,3 +1,4 @@
+from classifier.base_classifier import process_callback_data
 from config import bot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 
@@ -23,8 +24,10 @@ def send_categories(message):
 # Обработка нажатий кнопок
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callback(call):
-    # Обработка категорий
-    if call.data == "ЖКХ":
+    if call.data == "Оплатить счетчики":
+        markup = get_markup_counters()
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Какой счетчик вы хотите оплатить?", reply_markup=markup)
+    elif call.data == "ЖКХ":
         save_category_dialog(call.from_user.id, call.data)
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: ЖКХ")
     elif call.data == "Здравоохранение":
@@ -36,6 +39,26 @@ def handle_callback(call):
     elif call.data == "Транспорт":
         save_category_dialog(call.from_user.id, call.data)
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: Транспорт")
+    elif any(word in call.data for word in ['газ', 'вода', 'отопление', 'электричество']):
+        process_callback_data(call.from_user.id, call.message.chat.id, call.data, None)
+
+def get_markup_services():
+
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("Оплатить счетчики", callback_data="Оплатить счетчики")),
+
+    return markup
+
+def get_markup_counters():
+
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("Газ", callback_data="газ")),
+    markup.add(InlineKeyboardButton("Вода", callback_data="вода"))
+    markup.add(InlineKeyboardButton("Отопление", callback_data="отопление"))
+    markup.add(InlineKeyboardButton("Электричество", callback_data="электричество"))
+    return markup
 
 def get_keyboard(user_id):
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
