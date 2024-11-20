@@ -1,7 +1,6 @@
 from config import bot
 from telebot import types
 from utils.save_load import save_user_data, load_user_data
-from os import path
 
 @bot.message_handler(commands=['start'])
 def starter(message):
@@ -29,7 +28,6 @@ def starter(message):
         bot.send_message(message.chat.id, f'Здравствуйте {user_first_name}, ваш конфигурационный файл загружен!')
 
     bot.send_message(message.chat.id, f'Ваш ID: {user_id}')
-
 
 @bot.message_handler(commands=['help'])
 def help_command(message):

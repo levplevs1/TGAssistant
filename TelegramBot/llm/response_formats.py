@@ -188,7 +188,6 @@ METER_READINGS_FORMAT = {
   }
 }
 
-
 CLASSIFY_QUERY_FORMAT = {
   "type": "json_schema",
   "json_schema": {
@@ -218,6 +217,121 @@ CLASSIFY_QUERY_FORMAT = {
       "required": ["query_type", "reason", "confidence"]
     }
   }
+}
+
+FINAL_VALIDATION_SCHEMA = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "final_validation_response",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "is_valid": {
+                    "type": "boolean",
+                    "description": "Указывает, является ли ответ допустимым (True - ответ прошёл проверку, False - есть критические нарушения).",
+                    "example": True
+                },
+                "issues": {
+                    "type": "array",
+                    "description": "Список обнаруженных нарушений (если is_valid = False). Может быть пустым, если нарушений нет.",
+                    "items": {
+                        "type": "string",
+                        "description": "Описание конкретного нарушения.",
+                        "example": "Ответ не соответствует теме."
+                    }
+                },
+                "validation": {
+                    "type": "object",
+                    "description": "Детальная информация о проверке каждого критерия.",
+                    "properties": {
+                        "language": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean",
+                                    "description": "True, если ответ на русском языке, иначе False.",
+                                    "example": True
+                                },
+                                "reason": {
+                                    "type": "string",
+                                    "description": "Обоснование результата проверки.",
+                                    "example": "Ответ на русском языке."
+                                }
+                            },
+                            "required": ["status", "reason"]
+                        },
+                        "profanity": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean",
+                                    "description": "True, если ненормативная лексика отсутствует, иначе False.",
+                                    "example": True
+                                },
+                                "reason": {
+                                    "type": "string",
+                                    "description": "Обоснование результата проверки.",
+                                    "example": "Нецензурная лексика отсутствует."
+                                }
+                            },
+                            "required": ["status", "reason"]
+                        },
+                        "prohibited_topics": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean",
+                                    "description": "True, если запрещённые темы отсутствуют, иначе False.",
+                                    "example": True
+                                },
+                                "reason": {
+                                    "type": "string",
+                                    "description": "Обоснование результата проверки.",
+                                    "example": "Запрещённые темы не обнаружены."
+                                }
+                            },
+                            "required": ["status", "reason"]
+                        },
+                        "category_relevance": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean",
+                                    "description": "True, если ответ соответствует текущей теме, иначе False.",
+                                    "example": True
+                                },
+                                "reason": {
+                                    "type": "string",
+                                    "description": "Обоснование результата проверки.",
+                                    "example": "Ответ соответствует теме здравоохранения."
+                                }
+                            },
+                            "required": ["status", "reason"]
+                        },
+                        "factual_relevance": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean",
+                                    "description": "True, если ответ содержит полезную и релевантную информацию, иначе False.",
+                                    "example": True
+                                },
+                                "reason": {
+                                    "type": "string",
+                                    "description": "Обоснование результата проверки.",
+                                    "example": "Ответ логически связан с запросом."
+                                }
+                            },
+                            "required": ["status", "reason"]
+                        }
+                    },
+                    "required": ["language", "profanity", "prohibited_topics", "category_relevance", "factual_relevance"]
+                }
+            },
+            "required": ["is_valid", "issues", "validation"]
+        }
+    }
 }
 
 

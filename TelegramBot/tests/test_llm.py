@@ -1,4 +1,4 @@
-from llm.prompt_manager import process_user_request, get_meter_readings_llm
+from llm.prompt_manager import get_meter_readings_llm
 
 
 def process_prompt(message):

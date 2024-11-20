@@ -1,6 +1,5 @@
 import json
 from datetime import datetime
-
 from app.bot.handlers import users_status_service
 from llm.prompt_manager import classify_query_with_llm
 from config import bot
@@ -45,30 +44,6 @@ def classify_type_llm(query: str, comment_text='', retry_count=0, max_retries=3)
         print(f"Ошибка при классификации: {e}\n Повторная попытка с комментарием для модели...")
         # Увеличение счётчика повторов
         return classify_type_llm(query, comment_text="Внимание: предыдущее описание причины было слишком большое, что вызвало ошибку. Сократи причину.", retry_count=retry_count + 1, max_retries=max_retries)
-
-def save_to_json(data):
-    """
-    Сохраняет результаты в JSON файл.
-    """
-    filename = "classification_results.json"
-    timestamp = datetime.now().isoformat()
-
-    # Добавляем timestamp в данные
-    data["timestamp"] = timestamp
-
-    try:
-        # Читаем существующий файл
-        with open(filename, "r", encoding="utf-8") as file:
-            results = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        results = []
-
-    # Добавляем новый результат
-    results.append(data)
-
-    # Сохраняем файл
-    with open(filename, "w", encoding="utf-8") as file:
-        json.dump(results, file, ensure_ascii=False, indent=4)
 
 def process_callback_data(user_id, chat_id, data, classify_type):
     if classify_type is None:
@@ -124,3 +99,54 @@ def process_callback_data(user_id, chat_id, data, classify_type):
         else:  # Если данные валидны
             users_status_service.pop(user_id, None)
             bot.send_message(chat_id, category["success_message"](classify_type["data"]))
+
+def validate_response(json_response):
+    """
+    Проверяет валидность ответа модели по критериям финальной валидации.
+
+    :param json_response: dict, JSON-ответ от модели для валидации.
+    :return: bool, True если критических нарушений нет, иначе False.
+    """
+    # Проверяем наличие ключей
+    required_keys = ['is_valid', 'validation']
+    if not all(key in json_response for key in required_keys):
+        print("Отсутствуют обязательные ключи в JSON.")
+        return [False, ""]
+
+    # Проверка критических критериев
+    validation = json_response.get('validation', {})
+    critical_criteria = ['language', 'profanity', 'prohibited_topics']
+
+    for criterion in critical_criteria:
+        result = validation.get(criterion, {})
+        if not result.get('status', False):
+            print(f"Критическое нарушение: {criterion} — {result.get('reason', 'Причина не указана')}")
+            return [False, f"Критическое нарушение: {criterion} — {result.get('reason', 'Причина не указана')}"]
+
+    # Если нет критических нарушений
+    print("Критических нарушений нет. Ответ прошёл проверку.")
+    return [True, ""]
+
+def save_to_json(data):
+    """
+    Сохраняет результаты в JSON файл.
+    """
+    filename = "classification_results.json"
+    timestamp = datetime.now().isoformat()
+
+    # Добавляем timestamp в данные
+    data["timestamp"] = timestamp
+
+    try:
+        # Читаем существующий файл
+        with open(filename, "r", encoding="utf-8") as file:
+            results = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        results = []
+
+    # Добавляем новый результат
+    results.append(data)
+
+    # Сохраняем файл
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump(results, file, ensure_ascii=False, indent=4)
