@@ -12,7 +12,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Meter_Type
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Meter_Type, Meter_TypeDetailsVm>()
+            profile.CreateMap<Domain.src.Entities.Meter_Type, UpdateMeter_TypeCommand>()
                 .ForMember(entityDto => entityDto.meter_type_name,
                 opt => opt.MapFrom(entity => entity.meter_type_name));
         }

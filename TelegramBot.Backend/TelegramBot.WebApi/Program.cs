@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog.Events;
+using Serilog;
+using TelegramSink;
 using System;
 using System.Reflection;
 using TelegramBot.Application.src.Common.Dependencies;
@@ -17,10 +20,11 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
     config.AddProfile(new AssemblyMappingProfile(typeof(ITelegramBotDbContext).Assembly));
 });
-
+builder.Services.AddSerilog();
 builder.Services.AddAplication();
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
@@ -32,6 +36,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .WriteTo.TeleSink(
+                telegramApiKey: "*key",
+                telegramChatId: "*id")
+                .CreateLogger();
+
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
@@ -42,14 +53,21 @@ using (var scope = builder.Services.BuildServiceProvider().CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine(ex.Message);
+        Log.Fatal(ex, "An error occurred while app anitialization");
     }
 }
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI(config =>
+{
+    config.RoutePrefix = string.Empty;
+    config.SwaggerEndpoint("swagger/v1/swagger.json", "TelegramBot.Backend");
+});
 app.UseCustomExceptionHandler();
 app.UseRouting();
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 

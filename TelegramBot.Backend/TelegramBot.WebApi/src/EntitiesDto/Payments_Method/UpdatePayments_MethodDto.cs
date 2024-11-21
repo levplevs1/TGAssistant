@@ -12,7 +12,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Payments_Method
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Payments_Method, Payments_MethodDetailsVm>()
+            profile.CreateMap<Domain.src.Entities.Payments_Method, UpdatePayments_MethodCommand>()
                 .ForMember(entityDto => entityDto.payments_method_name,
                 opt => opt.MapFrom(entity => entity.payments_method_name));
         }
