@@ -1,8 +1,12 @@
 import json
 from datetime import datetime
-from app.bot.handlers import users_status_service
-from llm.prompt_manager import classify_query_with_llm
+
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+
+from llm.prompt_manager import classify_query_with_llm, get_variants_questions_llm
 from config import bot
+from utils.save_load import get_last_message
+
 
 def classify_type_llm(query: str, comment_text='', retry_count=0, max_retries=3):
     try:
@@ -97,8 +101,51 @@ def process_callback_data(user_id, chat_id, data, classify_type):
             )
             bot.send_message(chat_id, fail_message)
         else:  # Если данные валидны
-            users_status_service.pop(user_id, None)
-            bot.send_message(chat_id, category["success_message"](classify_type["data"]))
+            markup = get_markup_consent_rejection()
+            bot.send_message(chat_id, category["success_message"](classify_type["data"]), reply_markup=markup)
+
+def get_markup_consent_rejection():
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("Отправить", callback_data='отправить'),
+               InlineKeyboardButton("Не отправлять", callback_data="не отправлять")),
+
+    return markup
+
+def get_markup_services():
+
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("Оплатить счетчики", callback_data="Оплатить счетчики")),
+
+    return markup
+
+def get_keyboard(user_id):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+
+    last_message = get_last_message(user_id)
+    variants = get_variants_questions_llm(last_message)
+
+    # Добавляем кнопки
+    button1 = KeyboardButton(variants[0])
+    button2 = KeyboardButton(variants[1])
+    button3 = KeyboardButton(variants[2])
+    button4 = KeyboardButton("❔Ещё варианты")
+
+    # Добавляем кнопки в клавиатуру
+    keyboard.add(button4)
+    keyboard.add(button1)
+    keyboard.add(button2)
+    keyboard.add(button3)
+
+    return keyboard
+
+def get_markup_interaction_options():
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("⭐️Выбрать действие", callback_data="выбрать действие")),
+
+    return markup
 
 def validate_response(json_response):
     """

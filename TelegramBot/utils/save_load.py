@@ -1,6 +1,8 @@
 from os import path
 from json import load, dump
 
+from srsly import json_loads
+
 
 # Функция для загрузки данных документа
 def load_document_data():
@@ -68,3 +70,14 @@ def get_last_message(user_id):
                 return memory_chat[i]
     return None
 
+def search_query_by_response(user_id, response):
+
+    user_data = load_user_data(user_id)
+    memory_chat = user_data["memory_chat"]
+    memory_chat.reverse()  # Изменяем список
+
+    for i in range(len(memory_chat)):
+        if i % 2 == 0:
+            if memory_chat[i] == response:
+                return memory_chat[i+1]
+    return ''

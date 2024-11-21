@@ -1,9 +1,9 @@
+from app.bot.handlers.llm_response_handler import forming_response
 from classifier.base_classifier import process_callback_data
 from config import bot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
-
-from llm.prompt_manager import get_variants_questions_llm
-from utils.save_load import save_category_dialog, get_last_message
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from app.bot.handlers import users_status_service
+from utils.save_load import save_category_dialog, get_last_message, search_query_by_response, load_user_data
 
 
 # Команда для отображения кнопок
@@ -26,7 +26,40 @@ def send_categories(message):
 def handle_callback(call):
     if call.data == "Оплатить счетчики":
         markup = get_markup_counters()
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Какой счетчик вы хотите оплатить?", reply_markup=markup)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                              text="Какой счетчик вы хотите оплатить?", reply_markup=markup)
+    elif call.data == 'выбрать действие':
+        markup = get_markup_like_dislike_change()
+        bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=markup)
+    elif call.data == 'change':
+        last_message = search_query_by_response(user_id=call.from_user.id, response=call.message.text)
+
+        class Message:
+            def __init__(self, data):
+                # Рекурсивно преобразуем словари в объекты
+                for key, value in data.items():
+                    if isinstance(value, dict):
+                        setattr(self, key, Message(value))
+                    else:
+                        setattr(self, key, value)
+
+        message_copy = {
+                        "is_copy": True,
+                        "message_id": int,
+                        "from_user": {
+                            "id": call.from_user.id,
+                        },
+                        "chat": {
+                            "id": call.message.chat.id,
+                        },
+                        "text": last_message,
+                    }
+        message_copy = Message(message_copy)
+        forming_response(message_copy, load_user_data(call.from_user.id))
+    elif call.data == 'like':
+        print('like')
+    elif call.data == 'dislike':
+        print('dislike')
     elif call.data == "ЖКХ":
         save_category_dialog(call.from_user.id, call.data)
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: ЖКХ")
@@ -41,12 +74,34 @@ def handle_callback(call):
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: Транспорт")
     elif any(word in call.data for word in ['газ', 'вода', 'отопление', 'электричество']):
         process_callback_data(call.from_user.id, call.message.chat.id, call.data, None)
+    elif call.data == 'не отправлять':
+        bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                      reply_markup=None)
+    elif call.data == 'отправить':
 
-def get_markup_services():
+        user_service = users_status_service.get(call.from_user.id, None)
 
+        if user_service is None:
+            bot.send_message(call.message.chat.id, "Произошла ошибка при заполнении услуги")
+            return
+
+        stub(call.message.chat.id, user_service, call.from_user.id)
+        bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                      reply_markup=None)
+def stub(chat_id, user_service, user_id):
+    bot.send_message(chat_id, f"Оплачен счетчик: {user_service.get('category', None)}")
+    users_status_service.pop(user_id)
+
+def get_markup_like_dislike_change():
     markup = InlineKeyboardMarkup()
 
-    markup.add(InlineKeyboardButton("Оплатить счетчики", callback_data="Оплатить счетчики")),
+    like = InlineKeyboardButton('👍', callback_data='like')
+    dislike = InlineKeyboardButton('👎', callback_data='dislike')
+    change = InlineKeyboardButton('🔄Изменить ответ', callback_data='change')
+
+
+    markup.add(like, dislike)
+    markup.add(change)
 
     return markup
 
@@ -60,25 +115,5 @@ def get_markup_counters():
     markup.add(InlineKeyboardButton("Электричество", callback_data="электричество"))
     return markup
 
-def get_keyboard(user_id):
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-
-    last_message = get_last_message(user_id)
-    variants = get_variants_questions_llm(last_message)
-
-    # Добавляем кнопки
-    button1 = KeyboardButton(variants[0])
-    button2 = KeyboardButton(variants[1])
-    button3 = KeyboardButton(variants[2])
-    button4 = KeyboardButton("❔Ещё варианты")
-    button5 = KeyboardButton("🔄Изменить ответ")
-
-    # Добавляем кнопки в клавиатуру
-    keyboard.add(button4, button5)
-    keyboard.add(button1)
-    keyboard.add(button2)
-    keyboard.add(button3)
-
-    return keyboard
 
 

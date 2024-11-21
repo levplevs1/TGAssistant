@@ -1,8 +1,8 @@
 import threading
 from time import sleep
 from app.bot.handlers import users_status_service, waiting_for_response
-from app.bot.handlers.murkup_button import get_markup_services, get_keyboard
-from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response
+from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response, get_markup_services, \
+    get_keyboard, get_markup_interaction_options
 from llm.prompt_manager import get_meter_readings_llm, include_headers_llm, process_user_request, validation_answer_llm, \
     memory_validation_llm
 from config import bot
@@ -96,8 +96,8 @@ def handle_user_message(message, user_data):
                 bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Рассматриваю запрос на услугу")
             meter_readings = get_meter_readings_llm(message.text)
             if meter_readings['category'] != 'unknown':
-                users_status_service[user_id] = meter_readings['category']
-                process_callback_data(user_id, message.chat.id, users_status_service[user_id], meter_readings)
+                users_status_service[user_id] = meter_readings
+                process_callback_data(user_id, message.chat.id, meter_readings['category'], meter_readings)
                 bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
             else:
                 shared_text.update_text("Выберите услугу:")
@@ -153,7 +153,9 @@ def process_query(user_id, user_data, message, shared_text):
 
         # Отправка ответа пользователю
         keyboard = get_keyboard(message.from_user.id)
-        bot.send_message(message.chat.id, llm_answer_correction, reply_markup=keyboard)
+        markup = get_markup_interaction_options()
+        bot.send_message(message.chat.id, "Ответ готов", reply_markup=keyboard)
+        bot.send_message(message.chat.id, llm_answer_correction, reply_markup=markup)
 
 def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max_retries=2):
         # Проверка на превышение количества попыток

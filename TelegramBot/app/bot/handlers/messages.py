@@ -1,6 +1,7 @@
 from app.bot.handlers import waiting_for_response, users_status_service
 from app.bot.handlers.llm_response_handler import handle_user_message, forming_response, check_save_user_memory
-from app.bot.handlers.murkup_button import get_keyboard, send_categories
+from app.bot.handlers.murkup_button import send_categories
+from classifier.base_classifier import get_keyboard
 from utils.tokens import validate_count_tokens
 from config import bot
 from utils.save_load import load_user_data, get_last_message
@@ -20,7 +21,7 @@ def handle_photo_and_text(message):
 def texts(message):
     print(123)
     user_id = message.from_user.id
-    user_data = load_user_data(user_id) #Загрузка данных пользователя из БД!!!
+    user_data = load_user_data(user_id)
 
     if user_data is None:
         print("Ошибка: не удалось загрузить конфигурацию.")
