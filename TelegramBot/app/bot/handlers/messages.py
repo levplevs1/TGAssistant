@@ -4,12 +4,42 @@ from app.bot.handlers.murkup_button import send_categories
 from classifier.base_classifier import get_keyboard
 from utils.tokens import validate_count_tokens
 from config import bot
-from utils.save_load import load_user_data, get_last_message
+from utils.save_load import load_user_data, get_last_message, recognize_speech
+from pydub import AudioSegment
+from os import remove
 
 # Обработка голосового сообщения
 @bot.message_handler(content_types=['voice'])
 def handle_voice_message(message):
-    print("Голосовое сообщение")
+    user_id = message.from_user.id
+    file_info = bot.get_file(message.voice.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+
+    # Сохраняем файл голосового сообщения в формате OGG
+    ogg_file_path = f"users_voice_messages/voice_message_{user_id}.ogg"
+    with open(ogg_file_path, 'wb') as f:
+        f.write(downloaded_file)
+
+    # Конвертируем OGG в WAV
+    wav_file_path = f"users_voice_messages/voice_message_{user_id}.wav"
+    audio = AudioSegment.from_ogg(ogg_file_path)
+    audio.export(wav_file_path, format="wav")
+
+    # Распознаем речь
+    text = recognize_speech(wav_file_path)
+
+    if text:
+        print(f'Распознанный текст: {text}')
+        new_message = message
+        new_message.text = text
+
+        texts(new_message)
+    else:
+        bot.send_message(message.chat.id, "Не удалось распознать голосовое сообщение.")
+
+    # Удаляем файлы после обработки
+    remove(ogg_file_path)
+    remove(wav_file_path)
 
 # Обработка изображения
 @bot.message_handler(content_types=['photo'])

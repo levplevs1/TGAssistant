@@ -1,6 +1,6 @@
 from os import path
 from json import load, dump
-
+import speech_recognition as sr
 from srsly import json_loads
 
 
@@ -81,3 +81,18 @@ def search_query_by_response(user_id, response):
             if memory_chat[i] == response:
                 return memory_chat[i+1]
     return ''
+
+def recognize_speech(audio_path):
+    recognizer = sr.Recognizer()
+    try:
+        with sr.AudioFile(audio_path) as source:
+            audio = recognizer.record(source)
+        text = recognizer.recognize_google(audio, language="ru-RU")  # Преобразуем в текст
+        print(f"Recognized: {text}")
+        return text.lower()
+    except sr.UnknownValueError:
+        print("Could not understand audio")
+        return None
+    except sr.RequestError:
+        print("Could not request results from Google Speech Recognition service")
+        return None
