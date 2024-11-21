@@ -11,7 +11,7 @@ namespace TelegramBot.Application.src.Entities.Users.Queries.GetUsersDetails
     {
         public GetUsersDetailsQueryValidator()
         {
-            RuleFor(note => note.id_users).NotEmpty();
+            RuleFor(entity => entity.id_users).NotEmpty();
         }
     }
 }

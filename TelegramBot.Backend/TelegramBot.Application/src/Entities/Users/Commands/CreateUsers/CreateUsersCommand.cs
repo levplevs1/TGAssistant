@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TelegramBot.Domain.src.Entities;
 
 namespace TelegramBot.Application.src.Entities.Users.Commands.CreateUsers
 {

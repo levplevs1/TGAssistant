@@ -24,7 +24,7 @@ namespace TelegramBot.Tests.src.Entities.Users.Queries
         [Fact]
         public async Task GetUsersDetailsQueryHandler_Success()
         {
-            var handler = new GetUsersDetailsHandler(Context, Mapper);
+            var handler = new GetUsersDetailsQueryHandler(Context, Mapper);
 
             var result = await handler.Handle(
                 new GetUsersDetailsQuery

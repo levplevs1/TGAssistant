@@ -27,7 +27,7 @@ namespace TelegramBot.Tests.src.Entities.Users.Commands
         }
 
         [Fact]
-        public async Task DeleteNoteCommandHandler_FailOnWrongId()
+        public async Task DeleteUsersCommandHandler_FailOnWrongId()
         {
             var handler = new DeleteUsersCommandHandler(Context);
 

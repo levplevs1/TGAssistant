@@ -11,12 +11,12 @@ namespace TelegramBot.Application.src.Entities.Users.Commands.UpdateUsers
     {
         public UpdateUsersCommandValidator()
         {
-            RuleFor(createEntityCommand =>
-            createEntityCommand.name).MaximumLength(250);
-            RuleFor(createEntityCommand =>
-            createEntityCommand.lastname).MaximumLength(250);
-            RuleFor(createEntityCommand =>
-            createEntityCommand.username).MaximumLength(250);
+            RuleFor(updateEntityCommand =>
+            updateEntityCommand.name).MaximumLength(250);
+            RuleFor(updateEntityCommand =>
+            updateEntityCommand.lastname).MaximumLength(250);
+            RuleFor(updateEntityCommand =>
+            updateEntityCommand.username).MaximumLength(250);
         }
     }
 }

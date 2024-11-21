@@ -23,11 +23,11 @@ namespace TelegramBot.Application.src.Entities.Users.Queries.GetUsersList
         public async Task<UsersListVm> Handle(GetUsersListQuery request,
             CancellationToken cancellationToken)
         {
-            var notesQuery = await _dbContext.Users
+            var entityQuery = await _dbContext.Users
                 .ProjectTo<UsersLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-            return new UsersListVm { Users = notesQuery };
+            return new UsersListVm { Users = entityQuery };
         }
     }
 }

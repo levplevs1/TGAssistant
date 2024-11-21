@@ -12,7 +12,7 @@ namespace TelegramBot.Application.src.Entities.Users.Queries.GetUsersList
     {
         public GetUsersListQueryValidator()
         {
-            RuleFor(note => note.id_users).NotEmpty();
+            RuleFor(entity => entity.id_users);
         }
     }
 }
