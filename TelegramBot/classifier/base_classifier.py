@@ -1,8 +1,6 @@
 import json
 from datetime import datetime
-
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
-
 from llm.prompt_manager import classify_query_with_llm, get_variants_questions_llm
 from config import bot
 from utils.save_load import get_last_message
@@ -51,9 +49,15 @@ def classify_type_llm(query: str, comment_text='', retry_count=0, max_retries=3)
 
 def process_callback_data(user_id, chat_id, data, classify_type):
     if classify_type is None:
-        bot.send_message(chat_id, "LLM не смог получить категорию")
+        if data == 'вода':
+            bot.send_message(chat_id, "Напишите:\nОплати воду: горячая вода - (показания со счетчика горячей воды), холодная вода - (показания со счетчика холодной воды воды)")
+        elif data == 'электричество':
+            bot.send_message(chat_id, "Напишите:\nОплати электричество: день - (показания со счетчика электричества днем), ночь - (показания со счетчика электричества ночью)")
+        elif data == 'отопление':
+            bot.send_message(chat_id, f"Напишите:\nОплати отопление, счетчик показывает: (показания со счетчика топления)")
+        elif data == 'газ':
+            bot.send_message(chat_id, f"Напишите:\nОплати газ, счетчик показывает: (показания со счетчика газа)")
         return
-
     # Словарь с категориями и обработчиками
     categories = {
 

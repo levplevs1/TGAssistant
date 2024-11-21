@@ -26,8 +26,7 @@ def send_categories(message):
 def handle_callback(call):
     if call.data == "Оплатить счетчики":
         markup = get_markup_counters()
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                              text="Какой счетчик вы хотите оплатить?", reply_markup=markup)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Какой счетчик вы хотите оплатить?", reply_markup=markup)
     elif call.data == 'выбрать действие':
         markup = get_markup_like_dislike_change()
         bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=markup)
