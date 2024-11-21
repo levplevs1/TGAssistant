@@ -50,55 +50,60 @@ def process_callback_data(user_id, chat_id, data, classify_type):
         bot.send_message(chat_id, "LLM не смог получить категорию")
         return
 
-    # Словарь с категориями и обработчиками
+    # Определяем категории и соответствующие проверки
     categories = {
-
         "газ": {
-            "check": lambda data: data.get("объём"),
-            "fail_message": "Не удалось распознать показания газа. Напишите показания газа в кубометрах",
-            "success_message": lambda data: f"Газ\nОбъем: {data['объём']}"
+            "check": lambda d: d.get("газ") is not None,
+            "fail_message": "Не удалось распознать показания газа. Напишите показания газа в кубометрах.",
+            "success_message": lambda d: f"Газ\nОбъём: {int(d['газ'])} м³"
         },
-
         "вода": {
-            "check": lambda data: data.get("холодная_вода") and data.get("горячая_вода"),
-            "fail_message": lambda data: (
-                "Не удалось распознать показания холодной воды. Напишите показания холодной воды в кубометрах"
-                if not data.get("холодная_вода") else
-                "Не удалось распознать показания горячей воды. Напишите показания горячей воды в кубометрах"
+            "check": lambda d: d.get("холодная_вода") is not None and d.get("горячая_вода") is not None,
+            "fail_message": lambda d: (
+                "Не удалось распознать показания холодной воды. Напишите показания холодной воды в кубометрах."
+                if not d.get("холодная_вода") else
+                "Не удалось распознать показания горячей воды. Напишите показания горячей воды в кубометрах."
             ),
-            "success_message": lambda data: f"Вода\nГорячая: {data['горячая_вода']}\nХолодная: {data['холодная_вода']}"
+            "success_message": lambda d: (
+                f"Вода\nГорячая вода: {int(d['горячая_вода'])} м³\nХолодная вода: {int(d['холодная_вода'])} м³"
+            )
         },
-
         "отопление": {
-            "check": lambda data: data.get("тепло"),
-            "fail_message": "Не удалось распознать показания отопления. Напишите показания отопления в Гкал",
-            "success_message": lambda data: f"Отопление\nТепло: {data['тепло']}"
+            "check": lambda d: d.get("отопление") is not None,
+            "fail_message": "Не удалось распознать показания отопления. Напишите показания отопления в Гкал.",
+            "success_message": lambda d: f"Отопление\nТепло: {int(d['отопление'])} Гкал"
         },
-
         "электричество": {
-            "check": lambda data: data.get("день"),
-            "fail_message": "Не удалось распознать показания электричества. Напишите показания электричества в киловатт-часах",
-            "success_message": lambda data: f"Электричество\nДень: {data['день']}"
+            "check": lambda d: d.get("день") is not None or d.get("ночь") is not None,
+            "fail_message": "Не удалось распознать показания электричества. Укажите значения для дневного или ночного тарифа в киловатт-часах.",
+            "success_message": lambda d: (
+                f"Электричество\nДень: {int(d.get('день', 'не указано'))} кВт⋅ч\n"
+                f"Ночь: {int(d.get('ночь', 'не указано'))} кВт⋅ч"
+            )
         }
     }
 
-    # Проверяем, есть ли обработчик для данной категории
-    if data in categories:
-        category = categories[data]
-        check_result = category["check"](classify_type["data"])
-        check_error = classify_type.get("error", False)
-        print(f"Check error:{check_error}")
+    # Проверяем наличие категории в данных
+    category = classify_type.get("category", "unknown")
+    if category not in categories:
+        bot.send_message(chat_id, "Категория не распознана.")
+        return
 
-        if not check_result or check_error is True:  # Если данные не прошли проверку
-            fail_message = (
-                category["fail_message"](classify_type["data"])
-                if callable(category["fail_message"])
-                else category["fail_message"]
-            )
-            bot.send_message(chat_id, fail_message)
-        else:  # Если данные валидны
-            users_status_service.pop(user_id, None)
-            bot.send_message(chat_id, category["success_message"](classify_type["data"]))
+    # Получаем обработчик для категории
+    category_handler = categories[category]
+    check_result = category_handler["check"](classify_type["data"])
+    check_error = classify_type.get("error", False)
+
+    if not check_result or check_error:  # Если данные некорректны или есть ошибка
+        fail_message = (
+            category_handler["fail_message"](classify_type["data"])
+            if callable(category_handler["fail_message"])
+            else category_handler["fail_message"]
+        )
+        bot.send_message(chat_id, fail_message)
+    else:  # Если данные корректны
+        users_status_service.pop(user_id, None)
+        bot.send_message(chat_id, category_handler["success_message"](classify_type["data"]))
 
 def validate_response(json_response):
     """

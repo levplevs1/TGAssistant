@@ -19,6 +19,7 @@ def starter(message):
             'user_id': user_id,
             'first_name': user_first_name,
             'category_dialog': "",
+            'meter_readings': {},
             'memory': [],
             'memory_chat': []
         }
