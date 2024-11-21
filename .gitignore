@@ -161,3 +161,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 /TelegramBot.Backend/.vs/TelegramBot.Backend
+/TelegramBot.Backend/.vs/ProjectEvaluation
