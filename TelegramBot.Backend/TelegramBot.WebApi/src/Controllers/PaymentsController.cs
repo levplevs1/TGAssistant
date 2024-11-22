@@ -49,10 +49,11 @@ namespace TelegramBot.WebApi.src.Controllers
             return Ok(id_payments);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdatePayments([FromBody] UpdatePaymentsDto updatePaymentsDto)
+        [HttpPut("{id_payments}")]
+        public async Task<IActionResult> UpdatePayments(int id_payments, [FromBody] UpdatePaymentsDto updatePaymentsDto)
         {
             var command = _mapper.Map<UpdatePaymentsCommand>(updatePaymentsDto);
+            command.id_payments = id_payments;
             await Mediator.Send(command);
             return NoContent();
         }

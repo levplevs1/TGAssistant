@@ -49,10 +49,11 @@ namespace TelegramBot.WebApi.src.Controllers
             return Ok(id_user_memory);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser_Memory([FromBody] UpdateUser_MemoryDto updateUser_MemoryDto)
+        [HttpPut("{id_user_memory}")]
+        public async Task<IActionResult> UpdateUser_Memory(int id_user_memory, [FromBody] UpdateUser_MemoryDto updateUser_MemoryDto)
         {
             var command = _mapper.Map<UpdateUser_MemoryCommand>(updateUser_MemoryDto);
+            command.id_user_memory = id_user_memory;
             await Mediator.Send(command);
             return NoContent();
         }

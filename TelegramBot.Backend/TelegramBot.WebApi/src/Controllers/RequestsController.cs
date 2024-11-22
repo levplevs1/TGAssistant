@@ -50,10 +50,11 @@ namespace TelegramBot.WebApi.src.Controllers
             return Ok(id_requests);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateRequests([FromBody] UpdateRequestsDto updateRequestsDto)
+        [HttpPut("{id_requests}")]
+        public async Task<IActionResult> UpdateRequests(int id_requests, [FromBody] UpdateRequestsDto updateRequestsDto)
         {
             var command = _mapper.Map<UpdateRequestsCommand>(updateRequestsDto);
+            command.id_requests = id_requests;
             await Mediator.Send(command);
             return NoContent();
         }

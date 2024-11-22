@@ -49,10 +49,11 @@ namespace TelegramBot.WebApi.src.Controllers
             return Ok(id_meter_type);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateMeter_Type([FromBody] UpdateMeter_TypeDto updateMeter_TypeDto)
+        [HttpPut("{id_meter_type}")]
+        public async Task<IActionResult> UpdateMeter_Type(int id_meter_type, [FromBody] UpdateMeter_TypeDto updateMeter_TypeDto)
         {
             var command = _mapper.Map<UpdateMeter_TypeCommand>(updateMeter_TypeDto);
+            command.id_meter_type = id_meter_type;
             await Mediator.Send(command);
             return NoContent();
         }

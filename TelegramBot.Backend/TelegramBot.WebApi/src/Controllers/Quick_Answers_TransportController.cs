@@ -49,10 +49,11 @@ namespace TelegramBot.WebApi.src.Controllers
             return Ok(id_quick_answer_transport);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateQuick_Answers_Transport([FromBody] UpdateQuick_Answers_TransportDto updateQuick_Answers_TransportDto)
+        [HttpPut("{id_quick_answer_transport}")]
+        public async Task<IActionResult> UpdateQuick_Answers_Transport(int id_quick_answer_transport, [FromBody] UpdateQuick_Answers_TransportDto updateQuick_Answers_TransportDto)
         {
             var command = _mapper.Map<UpdateQuick_Answers_TransportCommand>(updateQuick_Answers_TransportDto);
+            command.id_quick_answer_transport = id_quick_answer_transport;
             await Mediator.Send(command);
             return NoContent();
         }
