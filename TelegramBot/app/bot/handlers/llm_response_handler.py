@@ -1,8 +1,8 @@
 import threading
 from time import sleep
 from app.bot.handlers import users_status_service, waiting_for_response
-from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response, get_markup_services, \
-    get_keyboard, get_markup_interaction_options
+from app.bot.handlers.murkup_button import get_markup_services, get_keyboard
+from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response
 from llm.prompt_manager import get_meter_readings_llm, include_headers_llm, process_user_request, validation_answer_llm, \
     memory_validation_llm
 from config import bot
@@ -11,60 +11,8 @@ from utils.logs import save_log_to_file
 from utils.save_load import save_memory_chat, save_user_data
 from utils.tokens import validate_count_tokens
 from colorama import init, Fore
-import warnings
 
 init(autoreset=True)
-
-# Разделяемая переменная для анимации
-class SharedText:
-    def __init__(self, text):
-        self.text = text
-        self.lock = threading.Lock()
-
-    def update_text(self, new_text):
-        with self.lock:
-            self.text = new_text
-
-    def get_text(self):
-        with self.lock:
-            return self.text
-
-# Создаём флаг для завершения потока
-stop_event = threading.Event()
-
-def animate_status_typing(sent_message, shared_text, change_time=1):
-    """
-    Анимация статуса печати сообщения.
-
-    Аргументы:
-        sent_message: Сообщение, которое будет редактироваться.
-        shared_text: Разделяемая переменная с текстом для анимации.
-        change_time: Время задержки между анимациями.
-    """
-    while not stop_event.is_set():  # Проверяем флаг на каждой итерации
-        try:
-            reverse_animate_typing = False
-            while sent_message is not None:
-                base_text = shared_text.get_text()  # Получаем актуальный текст
-                if not reverse_animate_typing:
-                    for i in range(1, 4):  # Цикл для добавления точек
-                        bot.edit_message_text(
-                            chat_id=sent_message.chat.id,
-                            message_id=sent_message.message_id,
-                            text=base_text + "." * i
-                        )
-                        sleep(change_time)
-                    reverse_animate_typing = True
-                else:
-                    bot.edit_message_text(
-                        chat_id=sent_message.chat.id,
-                        message_id=sent_message.message_id,
-                        text=base_text
-                    )
-                    sleep(change_time)
-                    reverse_animate_typing = False
-        except Exception:
-            print("Предупреждение. Текст для изменения анимации не найден")
 
 def send_typing_action(chat_id, user_id):
     while waiting_for_response.get(user_id, False):
@@ -75,12 +23,6 @@ def handle_user_message(message, user_data):
     user_id = message.from_user.id
     sent_message = bot.send_message(message.chat.id, "Думаю... Определяю обращение")
 
-    # Создаём разделяемую переменную для текста
-    shared_text = SharedText("Думаю... Определяю обращение")
-
-    # Запуск анимации в отдельном потоке
-    thread = threading.Thread(target=animate_status_typing, args=(sent_message, shared_text))
-    thread.start()
     print(f"Сообщение пользователя: {message.text}")
 
     if message.text:
@@ -88,35 +30,39 @@ def handle_user_message(message, user_data):
 
         # Тип запроса - услуга
         if classify_type and user_data["category_dialog"] == "ЖКХ":
-
-            stop_event.set()
-
-            shared_text.update_text("Рассматриваю запрос на услугу")
-            if sent_message.text != "Рассматриваю запрос на услугу":  # Проверка перед редактированием
                 bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Рассматриваю запрос на услугу")
-            meter_readings = get_meter_readings_llm(message.text)
-            if meter_readings['category'] != 'unknown':
-                users_status_service[user_id] = meter_readings
-                process_callback_data(user_id, message.chat.id, meter_readings['category'], meter_readings)
-                bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
-            else:
-                shared_text.update_text("Выберите услугу:")
-                markup = get_markup_services()
-                bot.send_message(message.chat.id, "Выберите услугу:", reply_markup=markup)
+
+                # Запись и валидация счётчиков LLM
+                meter_readings = get_meter_readings_llm(message.text)
+                if meter_readings['category'] != 'unknown':
+                    bot.send_message(message.chat.id, meter_readings['message'])
+                    users_status_service[user_id] = meter_readings['category']
+
+                    process_callback_data(user_id, message.chat.id, users_status_service[user_id], meter_readings)
+                    bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
+
+                    # Извлечение ранее переданных показаний счётчиков пользователя
+                    meter_readings_user = user_data.get('meter_readings', None)
+                    print(f"Показатели счётчиков пользователя: {meter_readings_user}")
+
+                    # Проверка существования счётчиков
+                    try:
+                        # Запись счётчиков пользователя
+                        user_data['meter_readings'] = meter_readings
+                        save_user_data(user_id, user_data)
+                    except Exception as e:
+                        print(Fore.RED + f"Ошибка записи показателей в пользователя: {e}")
+
+                else:
+                    markup = get_markup_services()
+                    bot.send_message(message.chat.id, "Выберите услугу:", reply_markup=markup)
+                    
         else:
-            shared_text.update_text("Формирую ответ на вопрос")
-
-            stop_event.set()
-
-            if sent_message.text != "Формирую ответ на вопрос":  # Проверка перед редактированием
-                bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Формирую ответ на вопрос")
+            bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Формирую ответ на вопрос")
 
             # Тип запроса - вопрос
-            process_query(user_id, user_data, message, shared_text)
+            process_query(user_id, user_data, message)
             bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
-
-    stop_event.set()  # Устанавливаем флаг завершения
-    thread.join()  # Дожидаемся завершения потока
 
     save_log_to_file()
     waiting_for_response[user_id] = False
@@ -128,9 +74,7 @@ def forming_response(message, user_data):
     typing_thread = threading.Thread(target=send_typing_action, args=(message.chat.id, message.from_user.id))
     typing_thread.start()
 
-def process_query(user_id, user_data, message, shared_text):
-
-        shared_text.update_text("Анализирую базу знаний")
+def process_query(user_id, user_data, message):
 
         # Получение всех заголовков из базы знаний
         headers = extract_headers(user_id)
@@ -145,7 +89,6 @@ def process_query(user_id, user_data, message, shared_text):
         llm_answer = process_user_request(message.text, user_data, doc_text)
 
         print("Валидация ответа...")
-        shared_text.update_text("Валидация ответа")
 
         # Валидация ответа
         llm_answer_correction = validate_answer(message, llm_answer, doc_text, user_data)
@@ -153,9 +96,7 @@ def process_query(user_id, user_data, message, shared_text):
 
         # Отправка ответа пользователю
         keyboard = get_keyboard(message.from_user.id)
-        markup = get_markup_interaction_options()
-        bot.send_message(message.chat.id, "Ответ готов", reply_markup=keyboard)
-        bot.send_message(message.chat.id, llm_answer_correction, reply_markup=markup)
+        bot.send_message(message.chat.id, llm_answer_correction, reply_markup=keyboard)
 
 def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max_retries=2):
         # Проверка на превышение количества попыток
