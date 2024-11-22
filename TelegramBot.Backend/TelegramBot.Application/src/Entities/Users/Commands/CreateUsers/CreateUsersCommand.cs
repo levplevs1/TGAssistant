@@ -14,6 +14,5 @@ namespace TelegramBot.Application.src.Entities.Users.Commands.CreateUsers
         public string name { get; set; }
         public string lastname { get; set; }
         public string username { get; set; }
-        public DateTime created_at { get; set; }
     }
 }

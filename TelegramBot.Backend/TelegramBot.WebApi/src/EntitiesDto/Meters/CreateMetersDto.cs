@@ -14,7 +14,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Meters
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Meters, CreateMetersCommand>()
+            profile.CreateMap<CreateMetersDto, CreateMetersCommand>()
                 .ForMember(entityDto => entityDto.id_meter_type,
                 opt => opt.MapFrom(entity => entity.id_meter_type))
                 .ForMember(entityDto => entityDto.id_users,

@@ -15,7 +15,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_hcs
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Quick_Answers_hcs, CreateQuick_Answers_hcsCommand>()
+            profile.CreateMap<CreateQuick_Answers_hcsDto, CreateQuick_Answers_hcsCommand>()
                 .ForMember(entityDto => entityDto.quick_answers_hcs_name,
                 opt => opt.MapFrom(entity => entity.quick_answers_hcs_name))
                 .ForMember(entityDto => entityDto.quick_answers_hcs_content,

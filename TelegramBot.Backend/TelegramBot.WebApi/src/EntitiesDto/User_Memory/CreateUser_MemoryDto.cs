@@ -13,7 +13,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.User_Memory
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.User_Memory, CreateUser_MemoryCommand>()
+            profile.CreateMap<CreateUser_MemoryDto, CreateUser_MemoryCommand>()
                 .ForMember(entityDto => entityDto.content_memory,
                 opt => opt.MapFrom(entity => entity.content_memory))
                 .ForMember(entityDto => entityDto.id_users,

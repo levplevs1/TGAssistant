@@ -17,7 +17,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Meter_Readings
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Meter_Readings, CreateMeter_ReadingsCommand>()
+            profile.CreateMap<CreateMeter_ReadingsDto, CreateMeter_ReadingsCommand>()
                 .ForMember(entityDto => entityDto.readings_value,
                 opt => opt.MapFrom(entity => entity.readings_value))
                 .ForMember(entityDto => entityDto.previos_readings_value,

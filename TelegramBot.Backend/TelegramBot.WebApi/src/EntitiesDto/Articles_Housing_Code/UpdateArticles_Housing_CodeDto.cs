@@ -13,7 +13,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Articles_Housing_Code
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Articles_Housing_Code, UpdateArticles_Housing_CodeCommand>()
+            profile.CreateMap<UpdateArticles_Housing_CodeDto, UpdateArticles_Housing_CodeCommand>()
                 .ForMember(entityDto => entityDto.articles_housing_code_name,
                 opt => opt.MapFrom(entity => entity.articles_housing_code_name))
                 .ForMember(entityDto => entityDto.articles_housing_code_content,

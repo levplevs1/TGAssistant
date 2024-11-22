@@ -14,7 +14,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.User_Memory
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.User_Memory, UpdateUser_MemoryCommand>()
+            profile.CreateMap<UpdateUser_MemoryDto, UpdateUser_MemoryCommand>()
                 .ForMember(entityDto => entityDto.content_memory,
                 opt => opt.MapFrom(entity => entity.content_memory));
         }

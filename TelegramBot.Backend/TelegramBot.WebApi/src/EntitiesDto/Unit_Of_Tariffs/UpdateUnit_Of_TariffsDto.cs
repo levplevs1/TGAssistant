@@ -12,7 +12,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Unit_Of_Tariffs
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Unit_Of_Tariffs, UpdateUnit_Of_TariffsCommand>()
+            profile.CreateMap<UpdateUnit_Of_TariffsDto, UpdateUnit_Of_TariffsCommand>()
                 .ForMember(entityDto => entityDto.unit_of_tariffs_name,
                 opt => opt.MapFrom(entity => entity.unit_of_tariffs_name));
         }

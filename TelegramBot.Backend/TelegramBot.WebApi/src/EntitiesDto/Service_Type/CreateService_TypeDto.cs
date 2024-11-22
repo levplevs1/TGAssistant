@@ -15,7 +15,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Service_Type
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Service_Type, CreateService_TypeCommand>()
+            profile.CreateMap<CreateService_TypeDto, CreateService_TypeCommand>()
                 .ForMember(entityDto => entityDto.service_type_name,
                 opt => opt.MapFrom(entity => entity.service_type_name))
                 .ForMember(entityDto => entityDto.id_housing_and_communal_services,

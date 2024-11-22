@@ -13,7 +13,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Transport
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Transport, CreateTransportCommand>()
+            profile.CreateMap<CreateTransportDto, CreateTransportCommand>()
                 .ForMember(entityDto => entityDto.text_of_request,
                 opt => opt.MapFrom(entity => entity.text_of_request));
         }

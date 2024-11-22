@@ -13,7 +13,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Healthcare
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Quick_Answers_Healthcare, CreateQuick_Answers_HealthcareCommand>()
+            profile.CreateMap<CreateQuick_Answers_HealthcareDto, CreateQuick_Answers_HealthcareCommand>()
                 .ForMember(entityDto => entityDto.quick_answer_healthcare_name,
                 opt => opt.MapFrom(entity => entity.quick_answer_healthcare_name))
                 .ForMember(entityDto => entityDto.id_healthcare,

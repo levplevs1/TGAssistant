@@ -10,7 +10,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Healthcare
         public string text_of_request { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Healthcare, UpdateHealthcareCommand>()
+            profile.CreateMap<UpdateHealthcareDto, UpdateHealthcareCommand>()
                 .ForMember(entityDto => entityDto.text_of_request,
                 opt => opt.MapFrom(entity => entity.text_of_request));
         }

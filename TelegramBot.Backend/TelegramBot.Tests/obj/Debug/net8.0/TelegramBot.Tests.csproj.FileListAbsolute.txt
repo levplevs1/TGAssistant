@@ -213,3 +213,7 @@ C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests
 C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests\obj\Debug\net8.0\TelegramBot.Tests.pdb
 C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests\obj\Debug\net8.0\TelegramBot.Tests.genruntimeconfig.cache
 C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests\obj\Debug\net8.0\ref\TelegramBot.Tests.dll
+C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests\bin\Debug\net8.0\Flurl.dll
+C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests\bin\Debug\net8.0\Flurl.Http.dll
+C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests\bin\Debug\net8.0\Serilog.dll
+C:\Users\User\OneDrive\Desktop\TGAssistant\TelegramBot.Backend\TelegramBot.Tests\bin\Debug\net8.0\TelegramSink.dll

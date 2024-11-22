@@ -19,8 +19,6 @@ namespace TelegramBot.Application.src.Entities.Users.Commands.CreateUsers
             createEntityCommand.lastname).MaximumLength(250);
             RuleFor(createEntityCommand =>
             createEntityCommand.username).MaximumLength(250);
-            RuleFor(createEntityCommand =>
-            createEntityCommand.created_at);
         }
     }
 }

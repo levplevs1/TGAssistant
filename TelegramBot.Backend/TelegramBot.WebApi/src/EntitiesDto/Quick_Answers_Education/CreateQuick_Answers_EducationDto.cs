@@ -12,7 +12,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Education
         public int id_education { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Quick_Answers_Education, CreateQuick_Answers_EducationCommand>()
+            profile.CreateMap<CreateQuick_Answers_EducationDto, CreateQuick_Answers_EducationCommand>()
                 .ForMember(entityDto => entityDto.quick_answer_education_name,
                 opt => opt.MapFrom(entity => entity.quick_answer_education_name))
                 .ForMember(entityDto => entityDto.id_education,

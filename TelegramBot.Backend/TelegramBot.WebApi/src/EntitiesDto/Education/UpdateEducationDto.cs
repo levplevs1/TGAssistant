@@ -11,7 +11,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Education
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Education, UpdateEducationCommand>()
+            profile.CreateMap<UpdateEducationDto, UpdateEducationCommand>()
                 .ForMember(entityDto => entityDto.text_of_request,
                 opt => opt.MapFrom(entity => entity.text_of_request));
         }

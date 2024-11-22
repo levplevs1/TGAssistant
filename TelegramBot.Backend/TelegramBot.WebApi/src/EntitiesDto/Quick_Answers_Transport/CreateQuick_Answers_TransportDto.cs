@@ -14,7 +14,7 @@ namespace TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Transport
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.src.Entities.Quick_Answers_Transport, CreateQuick_Answers_TransportCommand>()
+            profile.CreateMap<CreateQuick_Answers_TransportDto, CreateQuick_Answers_TransportCommand>()
                 .ForMember(entityDto => entityDto.quick_answer_transport_name,
                 opt => opt.MapFrom(entity => entity.quick_answer_transport_name))
                 .ForMember(entityDto => entityDto.id_transport,
