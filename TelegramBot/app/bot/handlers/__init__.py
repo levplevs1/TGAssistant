@@ -3,3 +3,6 @@ waiting_for_response = {}
 
 # Словарь для отслеживания статуса услуги пользователя
 users_status_service = {}
+
+# Хранить id сообщений выводящие память
+last_memory_message_id = {}

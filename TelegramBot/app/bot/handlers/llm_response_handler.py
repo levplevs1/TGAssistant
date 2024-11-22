@@ -1,8 +1,8 @@
 import threading
 from time import sleep
 from app.bot.handlers import users_status_service, waiting_for_response
-from app.bot.handlers.murkup_button import get_markup_services, get_keyboard
-from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response
+from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response, get_markup_services, \
+    get_keyboard
 from llm.prompt_manager import get_meter_readings_llm, include_headers_llm, process_user_request, validation_answer_llm, \
     memory_validation_llm
 from config import bot
@@ -35,7 +35,6 @@ def handle_user_message(message, user_data):
                 # Запись и валидация счётчиков LLM
                 meter_readings = get_meter_readings_llm(message.text)
                 if meter_readings['category'] != 'unknown':
-                    bot.send_message(message.chat.id, meter_readings['message'])
                     users_status_service[user_id] = meter_readings['category']
 
                     process_callback_data(user_id, message.chat.id, users_status_service[user_id], meter_readings)
@@ -133,25 +132,24 @@ def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max
             return validate_answer(message, llm_correction_answer, doc_text, user_data, retry_count)
 
 def check_save_user_memory(message, user_data):
-    if not validate_count_tokens(message.text, 100):
+    if not validate_count_tokens(message.text, 785):
         memory = user_data.get('memory', [])  # Загружаем память пользователя
         user_id = user_data.get('user_id', None)
 
-        for word in ["запомни", "сохрани", "не забудь"]:
-            if word in message.text.lower():
-                # Если память полна, выводим сообщение
-                if len(memory) >= 10:
-                    bot.send_message(message.chat.id, "Память переполнена! Очистите лишнее с помощью команды 'память'")
-                    return
+        if message.text.startswith('/запомни'):
+            # Если память полна, выводим сообщение
+            if len(memory) >= 10:
+                bot.send_message(message.chat.id, "Память переполнена! Очистите лишнее с помощью команды 'память'")
+                return
 
-                memory_response = memory_validation_llm(message.text)
-                print(f"Рез-тат валидации памяти: {memory_response}")
-                if memory_response["is_acceptable"]:
-                    user_data['memory'].append(memory_response["compressed_text"])  # Обновляем память в данных пользователя
-                    save_user_data(user_id, user_data)  # Сохраняем изменения в БД
-                    bot.send_message(message.chat.id, "Память обновлена")
-                else:
-                    bot.send_message(message.chat.id, "Ваш запрос содержит информацию, которая не может быть сохранена, так как она нарушает правила допустимого содержания или произошла ошибка во время операции. Пожалуйста, убедитесь, что информация является корректной, не содержит неподобающих деталей или запрещенных тем.")
-                    return
+            memory_response = memory_validation_llm(message.text)
+            print(f"Рез-тат валидации памяти: {memory_response}")
+            if memory_response["is_acceptable"]:
+                user_data['memory'].append(memory_response["compressed_text"])  # Обновляем память в данных пользователя
+                save_user_data(user_id, user_data)  # Сохраняем изменения в БД
+                bot.send_message(message.chat.id, "Память обновлена")
+            else:
+                bot.send_message(message.chat.id, "Ваш запрос содержит информацию, которая не может быть сохранена, так как она нарушает правила допустимого содержания или произошла ошибка во время операции. Пожалуйста, убедитесь, что информация является корректной, не содержит неподобающих деталей или запрещенных тем.")
+                return
     else:
         bot.send_message(message.chat.id, "Слишком большое сообщение, чтобы его запомнить")

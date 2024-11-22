@@ -1,8 +1,11 @@
 import json
 from datetime import datetime
-from app.bot.handlers import users_status_service
-from llm.prompt_manager import classify_query_with_llm
+from llm.prompt_manager import classify_query_with_llm, get_variants_questions_llm
 from config import bot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+
+from utils.save_load import get_last_message
+
 
 def classify_type_llm(query: str, comment_text='', retry_count=0, max_retries=3):
     try:
@@ -47,63 +50,107 @@ def classify_type_llm(query: str, comment_text='', retry_count=0, max_retries=3)
 
 def process_callback_data(user_id, chat_id, data, classify_type):
     if classify_type is None:
-        bot.send_message(chat_id, "LLM не смог получить категорию")
+        if data == 'вода':
+            bot.send_message(chat_id, "Напишите:\nОплати воду: горячая вода - (показания со счетчика горячей воды), холодная вода - (показания со счетчика холодной воды воды)")
+        elif data == 'электричество':
+            bot.send_message(chat_id, "Напишите:\nОплати электричество: день - (показания со счетчика электричества днем), ночь - (показания со счетчика электричества ночью)")
+        elif data == 'отопление':
+            bot.send_message(chat_id, f"Напишите:\nОплати отопление, счетчик показывает: (показания со счетчика топления)")
+        elif data == 'газ':
+            bot.send_message(chat_id, f"Напишите:\nОплати газ, счетчик показывает: (показания со счетчика газа)")
         return
-
-    # Определяем категории и соответствующие проверки
+    # Словарь с категориями и обработчиками
     categories = {
+
         "газ": {
-            "check": lambda d: d.get("газ") is not None,
-            "fail_message": "Не удалось распознать показания газа. Напишите показания газа в кубометрах.",
-            "success_message": lambda d: f"Газ\nОбъём: {int(d['газ'])} м³"
+            "check": lambda data: data.get("объём"),
+            "fail_message": "Не удалось распознать показания газа. Напишите показания газа в кубометрах",
+            "success_message": lambda data: f"Газ\nОбъем: {data['объём']}"
         },
+
         "вода": {
-            "check": lambda d: d.get("холодная_вода") is not None and d.get("горячая_вода") is not None,
-            "fail_message": lambda d: (
-                "Не удалось распознать показания холодной воды. Напишите показания холодной воды в кубометрах."
-                if not d.get("холодная_вода") else
-                "Не удалось распознать показания горячей воды. Напишите показания горячей воды в кубометрах."
+            "check": lambda data: data.get("холодная_вода") and data.get("горячая_вода"),
+            "fail_message": lambda data: (
+                "Не удалось распознать показания холодной воды. Напишите показания холодной воды в кубометрах"
+                if not data.get("холодная_вода") else
+                "Не удалось распознать показания горячей воды. Напишите показания горячей воды в кубометрах"
             ),
-            "success_message": lambda d: (
-                f"Вода\nГорячая вода: {int(d['горячая_вода'])} м³\nХолодная вода: {int(d['холодная_вода'])} м³"
-            )
+            "success_message": lambda data: f"Вода\nГорячая: {data['горячая_вода']}\nХолодная: {data['холодная_вода']}"
         },
+
         "отопление": {
-            "check": lambda d: d.get("отопление") is not None,
-            "fail_message": "Не удалось распознать показания отопления. Напишите показания отопления в Гкал.",
-            "success_message": lambda d: f"Отопление\nТепло: {int(d['отопление'])} Гкал"
+            "check": lambda data: data.get("тепло"),
+            "fail_message": "Не удалось распознать показания отопления. Напишите показания отопления в Гкал",
+            "success_message": lambda data: f"Отопление\nТепло: {data['тепло']}"
         },
+
         "электричество": {
-            "check": lambda d: d.get("день") is not None or d.get("ночь") is not None,
-            "fail_message": "Не удалось распознать показания электричества. Укажите значения для дневного или ночного тарифа в киловатт-часах.",
-            "success_message": lambda d: (
-                f"Электричество\nДень: {int(d.get('день', 'не указано'))} кВт⋅ч\n"
-                f"Ночь: {int(d.get('ночь', 'не указано'))} кВт⋅ч"
-            )
+            "check": lambda data: data.get("день"),
+            "fail_message": "Не удалось распознать показания электричества. Напишите показания электричества в киловатт-часах",
+            "success_message": lambda data: f"Электричество\nДень: {data['день']}"
         }
     }
 
-    # Проверяем наличие категории в данных
-    category = classify_type.get("category", "unknown")
-    if category not in categories:
-        bot.send_message(chat_id, "Категория не распознана.")
-        return
+    # Проверяем, есть ли обработчик для данной категории
+    if data in categories:
+        category = categories[data]
+        check_result = category["check"](classify_type["data"])
+        check_error = classify_type.get("error", False)
+        print(f"Check error:{check_error}")
 
-    # Получаем обработчик для категории
-    category_handler = categories[category]
-    check_result = category_handler["check"](classify_type["data"])
-    check_error = classify_type.get("error", False)
+        if not check_result or check_error is True:  # Если данные не прошли проверку
+            fail_message = (
+                category["fail_message"](classify_type["data"])
+                if callable(category["fail_message"])
+                else category["fail_message"]
+            )
+            bot.send_message(chat_id, fail_message)
+        else:  # Если данные валидны
+            markup = get_markup_consent_rejection()
+            bot.send_message(chat_id, category["success_message"](classify_type["data"]), reply_markup=markup)
 
-    if not check_result or check_error:  # Если данные некорректны или есть ошибка
-        fail_message = (
-            category_handler["fail_message"](classify_type["data"])
-            if callable(category_handler["fail_message"])
-            else category_handler["fail_message"]
-        )
-        bot.send_message(chat_id, fail_message)
-    else:  # Если данные корректны
-        users_status_service.pop(user_id, None)
-        bot.send_message(chat_id, category_handler["success_message"](classify_type["data"]))
+def get_markup_consent_rejection():
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("Отправить", callback_data='отправить'),
+               InlineKeyboardButton("Не отправлять", callback_data="не отправлять")),
+
+    return markup
+
+def get_markup_services():
+
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("Оплатить счетчики", callback_data="Оплатить счетчики")),
+
+    return markup
+
+def get_keyboard(user_id):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+
+    last_message = get_last_message(user_id)
+    variants = get_variants_questions_llm(last_message)
+
+    # Добавляем кнопки
+    button1 = KeyboardButton(variants[0])
+    button2 = KeyboardButton(variants[1])
+    button3 = KeyboardButton(variants[2])
+    button4 = KeyboardButton("❔Ещё варианты")
+
+    # Добавляем кнопки в клавиатуру
+    keyboard.add(button4)
+    keyboard.add(button1)
+    keyboard.add(button2)
+    keyboard.add(button3)
+
+    return keyboard
+
+def get_markup_interaction_options():
+    markup = InlineKeyboardMarkup()
+
+    markup.add(InlineKeyboardButton("⭐️Выбрать действие", callback_data="выбрать действие")),
+
+    return markup
 
 def validate_response(json_response):
     """
