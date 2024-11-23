@@ -4,9 +4,11 @@ from app.bot.handlers.murkup_button import send_categories
 from classifier.base_classifier import get_keyboard
 from utils.tokens import validate_count_tokens
 from config import bot
-from utils.save_load import load_user_data, get_last_message, recognize_speech
+from utils.save_load import get_last_message, recognize_speech
 from pydub import AudioSegment
 from os import remove
+from database.load import get_user_database, get_service_type_database
+
 
 # Обработка голосового сообщения
 @bot.message_handler(content_types=['voice'])
@@ -51,7 +53,7 @@ def handle_photo_and_text(message):
 def texts(message):
     print(123)
     user_id = message.from_user.id
-    user_data = load_user_data(user_id)
+    user_data = get_user_database(user_id)
 
     if message.text == 'Вот что я умею':
         bot.send_message(message.chat.id, """
@@ -93,14 +95,8 @@ def texts(message):
         print("Ошибка: не удалось загрузить конфигурацию.")
         return
 
-    if user_data["category_dialog"] == "":
+    if get_service_type_database(user_id) == "":
         send_categories(message)
-        return
-
-    # Проверяем оказывается ли услуга пользователю
-    if users_status_service.get(user_id, False):
-        bot.send_message(message.chat.id, "Производится оказание услуги")
-        handle_user_message(message, user_data)
         return
 
     # Проверяем, ожидает ли пользователь ответа
@@ -119,7 +115,7 @@ def texts(message):
         bot.send_message(message.chat.id, "Вот ещё варианты" , reply_markup=keyboard)
         return
 
-    if validate_count_tokens(message.text, 1000):
+    if validate_count_tokens(message.text, 500):
         bot.send_message(message.chat.id, "Ваше сообщение слишком большое")
         return
 

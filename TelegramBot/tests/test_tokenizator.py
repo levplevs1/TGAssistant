@@ -1,5 +1,5 @@
 from utils.tokens import count_tokens
 
-word = "словари " * 32
+word = "да " * 82
 
 print(count_tokens(word))

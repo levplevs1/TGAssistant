@@ -3,7 +3,8 @@ from classifier.base_classifier import process_callback_data
 from config import bot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from app.bot.handlers import users_status_service, waiting_for_response, last_memory_message_id
-from utils.save_load import save_category_dialog, search_query_by_response, load_user_data, save_user_data
+from utils.save_load import save_category_dialog, search_query_by_response
+from database.load import get_user_database, add_user_database, post_service_type_database, get_memory_database
 
 
 # Команда для отображения кнопок
@@ -55,7 +56,7 @@ def handle_callback(call):
 
         message_copy = Message(message_copy)
         if waiting_for_response[call.from_user.id] == False:
-            forming_response(message_copy, load_user_data(call.from_user.id))
+            forming_response(message_copy, get_user_database(call.from_user.id))
         else:
             bot.send_message(call.message.chat.id, "Пожалуйста, подождите, пока я обработаю ваш предыдущий запрос.")
     elif call.data == 'like':
@@ -63,16 +64,16 @@ def handle_callback(call):
     elif call.data == 'dislike':
         print('dislike')
     elif call.data == "ЖКХ":
-        save_category_dialog(call.from_user.id, call.data)
+        post_service_type_database(call.from_user.id, "ЖКХ")
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: ЖКХ")
     elif call.data == "Здравоохранение":
-        save_category_dialog(call.from_user.id, call.data)
+        post_service_type_database(call.from_user.id, "Здравоохранение")
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: Здравоохранение")
     elif call.data == "Образование":
-        save_category_dialog(call.from_user.id, call.data)
+        post_service_type_database(call.from_user.id, "Образование")
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: Образование")
     elif call.data == "Транспорт":
-        save_category_dialog(call.from_user.id, call.data)
+        post_service_type_database(call.from_user.id, "Транспорт")
         bot.send_message(call.message.chat.id, "Вы выбрали категорию: Транспорт")
     elif any(word in call.data for word in ['газ', 'вода', 'отопление', 'электричество']):
         process_callback_data(call.from_user.id, call.message.chat.id, call.data, None)
@@ -88,8 +89,7 @@ def handle_callback(call):
         stub(call.message.chat.id, user_service, call.from_user.id)
         bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=None)
     else:
-        user_data = load_user_data(call.from_user.id)
-        memory = user_data.get('memory', [])
+        memory = get_memory_database(call.from_user.id)
         try:
             index_to_delete = int(call.data)
         except Exception as e:
@@ -97,27 +97,29 @@ def handle_callback(call):
             return
 
         user_id = call.from_user.id
-        user_data = load_user_data(user_id)
-
-        if user_data is None:
-            bot.send_message(call.message.chat.id, "Ошибка: не удалось загрузить конфигурацию.")
-            return
 
         # Проверяем, что сообщение, с которого удаляется память, совпадает с последним сообщением с памятью
         if call.message.message_id != last_memory_message_id.get(user_id):
-            bot.send_message(call.message.chat.id,
-                             "Вы можете удалять память только из последнего вызванного сообщения.")
+            bot.send_message(call.message.chat.id, "Вы можете удалять память только из последнего вызванного сообщения.")
             return
 
         if 0 <= index_to_delete < len(memory):
-            memory.pop(index_to_delete)  # Удаляем элемент по индексу
-            user_data['memory'] = memory  # Обновляем память в данных пользователя
-            save_user_data(user_id, user_data)  # Сохраняем изменения
+
+            memory = memory.reverse()
+
+            memory_copy = []
+
+            count = 0
+            for el in memory:
+                if el[32] == 'Пользователь попросил запомнить:' and count <= 9:
+                    memory_copy.append(el)
+
+
 
             # Пересоздаем кнопки после удаления элемента
             memory_markup = InlineKeyboardMarkup()
             count = 0
-            for el in memory:
+            for el in memory_copy:
                 memory_markup.add(InlineKeyboardButton(el, callback_data=f'{count}'))
                 count += 1
 

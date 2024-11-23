@@ -47,22 +47,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Articles_Housing_CodeController",
-    "Method": "UpdateArticles_Housing_Code",
-    "RelativePath": "api/Articles_Housing_Code",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateArticles_Housing_CodeDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Articles_Housing_Code.UpdateArticles_Housing_CodeDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Articles_Housing_CodeController",
     "Method": "GetArticles_Housing_CodeDetails",
     "RelativePath": "api/Articles_Housing_Code/{id_articles_housing_code}",
     "HttpMethod": "GET",
@@ -86,6 +70,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Articles_Housing_CodeController",
+    "Method": "UpdateArticles_Housing_Code",
+    "RelativePath": "api/Articles_Housing_Code/{id_articles_housing_code}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_articles_housing_code",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateArticles_Housing_CodeDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Articles_Housing_Code.UpdateArticles_Housing_CodeDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Articles_Housing_CodeController",
@@ -151,22 +156,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.EducationController",
-    "Method": "UpdateEducation",
-    "RelativePath": "api/Education",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateEducationDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Education.UpdateEducationDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.EducationController",
     "Method": "GetEducationDetails",
     "RelativePath": "api/Education/{id_education}",
     "HttpMethod": "GET",
@@ -190,6 +179,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.EducationController",
+    "Method": "UpdateEducation",
+    "RelativePath": "api/Education/{id_education}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_education",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateEducationDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Education.UpdateEducationDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.EducationController",
@@ -255,22 +265,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.HealthcareController",
-    "Method": "UpdateHealthcare",
-    "RelativePath": "api/Healthcare",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateHealthcareDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Healthcare.UpdateHealthcareDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.HealthcareController",
     "Method": "GetHealthcareDetails",
     "RelativePath": "api/Healthcare/{id_healthcare}",
     "HttpMethod": "GET",
@@ -294,6 +288,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.HealthcareController",
+    "Method": "UpdateHealthcare",
+    "RelativePath": "api/Healthcare/{id_healthcare}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_healthcare",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateHealthcareDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Healthcare.UpdateHealthcareDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.HealthcareController",
@@ -359,22 +374,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Housing_And_Communal_ServicesController",
-    "Method": "UpdateHousing_And_Communal_Services",
-    "RelativePath": "api/Housing_And_Communal_Services",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateHousing_And_Communal_ServicesDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Housing_And_Communal_Services.UpdateHousing_And_Communal_ServicesDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Housing_And_Communal_ServicesController",
     "Method": "GetHousing_And_Communal_ServicesDetails",
     "RelativePath": "api/Housing_And_Communal_Services/{id_housing_and_communal_services}",
     "HttpMethod": "GET",
@@ -398,6 +397,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Housing_And_Communal_ServicesController",
+    "Method": "UpdateHousing_And_Communal_Services",
+    "RelativePath": "api/Housing_And_Communal_Services/{id_housing_and_communal_services}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_housing_and_communal_services",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateHousing_And_Communal_ServicesDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Housing_And_Communal_Services.UpdateHousing_And_Communal_ServicesDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Housing_And_Communal_ServicesController",
@@ -463,22 +483,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_ReadingsController",
-    "Method": "UpdateMeter_Readings",
-    "RelativePath": "api/Meter_Readings",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateMeter_ReadingsDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Meter_Readings.UpdateMeter_ReadingsDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_ReadingsController",
     "Method": "GetMeter_ReadingsDetails",
     "RelativePath": "api/Meter_Readings/{id_meter_readings}",
     "HttpMethod": "GET",
@@ -502,6 +506,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_ReadingsController",
+    "Method": "UpdateMeter_Readings",
+    "RelativePath": "api/Meter_Readings/{id_meter_readings}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_meter_readings",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateMeter_ReadingsDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Meter_Readings.UpdateMeter_ReadingsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_ReadingsController",
@@ -567,22 +592,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_TypeController",
-    "Method": "UpdateMeter_Type",
-    "RelativePath": "api/Meter_Type",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateMeter_TypeDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Meter_Type.UpdateMeter_TypeDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_TypeController",
     "Method": "GetMeter_TypeDetails",
     "RelativePath": "api/Meter_Type/{id_meter_type}",
     "HttpMethod": "GET",
@@ -606,6 +615,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_TypeController",
+    "Method": "UpdateMeter_Type",
+    "RelativePath": "api/Meter_Type/{id_meter_type}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_meter_type",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateMeter_TypeDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Meter_Type.UpdateMeter_TypeDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Meter_TypeController",
@@ -671,22 +701,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.MetersController",
-    "Method": "UpdateMeters",
-    "RelativePath": "api/Meters",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateMetersDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Meters.UpdateMetersDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.MetersController",
     "Method": "GetMetersDetails",
     "RelativePath": "api/Meters/{id_meters}",
     "HttpMethod": "GET",
@@ -710,6 +724,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.MetersController",
+    "Method": "UpdateMeters",
+    "RelativePath": "api/Meters/{id_meters}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_meters",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateMetersDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Meters.UpdateMetersDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.MetersController",
@@ -774,22 +809,6 @@
     ]
   },
   {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.PaymentsController",
-    "Method": "UpdatePayments",
-    "RelativePath": "api/Payments",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updatePaymentsDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Payments.UpdatePaymentsDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Payments_MethodController",
     "Method": "GetAllPayments_Method",
     "RelativePath": "api/Payments_Method",
@@ -837,22 +856,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Payments_MethodController",
-    "Method": "UpdatePayments_Method",
-    "RelativePath": "api/Payments_Method",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updatePayments_MethodDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Payments_Method.UpdatePayments_MethodDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Payments_MethodController",
     "Method": "GetPayments_MethodDetails",
     "RelativePath": "api/Payments_Method/{id_payments_method}",
     "HttpMethod": "GET",
@@ -876,6 +879,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Payments_MethodController",
+    "Method": "UpdatePayments_Method",
+    "RelativePath": "api/Payments_Method/{id_payments_method}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_payments_method",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatePayments_MethodDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Payments_Method.UpdatePayments_MethodDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Payments_MethodController",
@@ -918,6 +942,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.PaymentsController",
+    "Method": "UpdatePayments",
+    "RelativePath": "api/Payments/{id_payments}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_payments",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatePaymentsDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Payments.UpdatePaymentsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.PaymentsController",
@@ -983,22 +1028,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_EducationController",
-    "Method": "UpdateQuick_Answers_Education",
-    "RelativePath": "api/Quick_Answers_Education",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateQuick_Answers_EducationDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Education.UpdateQuick_Answers_EducationDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_EducationController",
     "Method": "GetQuick_Answers_EducationDetails",
     "RelativePath": "api/Quick_Answers_Education/{id_quick_answer_education}",
     "HttpMethod": "GET",
@@ -1022,6 +1051,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_EducationController",
+    "Method": "UpdateQuick_Answers_Education",
+    "RelativePath": "api/Quick_Answers_Education/{id_quick_answer_education}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_quick_answer_education",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateQuick_Answers_EducationDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Education.UpdateQuick_Answers_EducationDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_EducationController",
@@ -1087,22 +1137,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_hcsController",
-    "Method": "UpdateQuick_Answers_hcs",
-    "RelativePath": "api/Quick_Answers_hcs",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateQuick_Answers_hcsDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_hcs.UpdateQuick_Answers_hcsDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_hcsController",
     "Method": "GetQuick_Answers_hcsDetails",
     "RelativePath": "api/Quick_Answers_hcs/{id_quick_answers_hcs}",
     "HttpMethod": "GET",
@@ -1126,6 +1160,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_hcsController",
+    "Method": "UpdateQuick_Answers_hcs",
+    "RelativePath": "api/Quick_Answers_hcs/{id_quick_answers_hcs}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_quick_answers_hcs",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateQuick_Answers_hcsDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_hcs.UpdateQuick_Answers_hcsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_hcsController",
@@ -1191,22 +1246,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_HealthcareController",
-    "Method": "UpdateQuick_Answers_Healthcare",
-    "RelativePath": "api/Quick_Answers_Healthcare",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateQuick_Answers_HealthcareDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Healthcare.UpdateQuick_Answers_HealthcareDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_HealthcareController",
     "Method": "GetQuick_Answers_HealthcareDetails",
     "RelativePath": "api/Quick_Answers_Healthcare/{id_quick_answer_healthcare}",
     "HttpMethod": "GET",
@@ -1230,6 +1269,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_HealthcareController",
+    "Method": "UpdateQuick_Answers_Healthcare",
+    "RelativePath": "api/Quick_Answers_Healthcare/{id_quick_answer_healthcare}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_quick_answer_healthcare",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateQuick_Answers_HealthcareDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Healthcare.UpdateQuick_Answers_HealthcareDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_HealthcareController",
@@ -1295,22 +1355,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_TransportController",
-    "Method": "UpdateQuick_Answers_Transport",
-    "RelativePath": "api/Quick_Answers_Transport",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateQuick_Answers_TransportDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Transport.UpdateQuick_Answers_TransportDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_TransportController",
     "Method": "GetQuick_Answers_TransportDetails",
     "RelativePath": "api/Quick_Answers_Transport/{id_quick_answer_transport}",
     "HttpMethod": "GET",
@@ -1334,6 +1378,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_TransportController",
+    "Method": "UpdateQuick_Answers_Transport",
+    "RelativePath": "api/Quick_Answers_Transport/{id_quick_answer_transport}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_quick_answer_transport",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateQuick_Answers_TransportDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Quick_Answers_Transport.UpdateQuick_Answers_TransportDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Quick_Answers_TransportController",
@@ -1399,22 +1464,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Reading_HistoryController",
-    "Method": "UpdateReading_History",
-    "RelativePath": "api/Reading_History",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateReading_HistoryDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Reading_History.UpdateReading_HistoryDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Reading_HistoryController",
     "Method": "GetReading_HistoryDetails",
     "RelativePath": "api/Reading_History/{id_reading_history}",
     "HttpMethod": "GET",
@@ -1438,6 +1487,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Reading_HistoryController",
+    "Method": "UpdateReading_History",
+    "RelativePath": "api/Reading_History/{id_reading_history}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_reading_history",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateReading_HistoryDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Reading_History.UpdateReading_HistoryDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Reading_HistoryController",
@@ -1503,22 +1573,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.RequestsController",
-    "Method": "UpdateRequests",
-    "RelativePath": "api/Requests",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateRequestsDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Requests.UpdateRequestsDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.RequestsController",
     "Method": "GetRequestsDetails",
     "RelativePath": "api/Requests/{id_requests}",
     "HttpMethod": "GET",
@@ -1542,6 +1596,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.RequestsController",
+    "Method": "UpdateRequests",
+    "RelativePath": "api/Requests/{id_requests}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_requests",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateRequestsDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Requests.UpdateRequestsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.RequestsController",
@@ -1607,22 +1682,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Service_TypeController",
-    "Method": "UpdateService_Type",
-    "RelativePath": "api/Service_Type",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateService_TypeDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Service_Type.UpdateService_TypeDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Service_TypeController",
     "Method": "GetService_TypeDetails",
     "RelativePath": "api/Service_Type/{id_service_type}",
     "HttpMethod": "GET",
@@ -1646,6 +1705,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Service_TypeController",
+    "Method": "UpdateService_Type",
+    "RelativePath": "api/Service_Type/{id_service_type}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_service_type",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateService_TypeDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Service_Type.UpdateService_TypeDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Service_TypeController",
@@ -1711,22 +1791,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.TariffsController",
-    "Method": "UpdateTariffs",
-    "RelativePath": "api/Tariffs",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateTariffsDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Tariffs.UpdateTariffsDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.TariffsController",
     "Method": "GetTariffsDetails",
     "RelativePath": "api/Tariffs/{id_tariffs}",
     "HttpMethod": "GET",
@@ -1750,6 +1814,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.TariffsController",
+    "Method": "UpdateTariffs",
+    "RelativePath": "api/Tariffs/{id_tariffs}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_tariffs",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateTariffsDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Tariffs.UpdateTariffsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.TariffsController",
@@ -1815,22 +1900,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.TransportController",
-    "Method": "UpdateTransport",
-    "RelativePath": "api/Transport",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateTransportDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Transport.UpdateTransportDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.TransportController",
     "Method": "GetTransportDetails",
     "RelativePath": "api/Transport/{id_transport}",
     "HttpMethod": "GET",
@@ -1854,6 +1923,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.TransportController",
+    "Method": "UpdateTransport",
+    "RelativePath": "api/Transport/{id_transport}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_transport",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateTransportDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Transport.UpdateTransportDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.TransportController",
@@ -1919,22 +2009,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Type_Of_RequestsController",
-    "Method": "UpdateType_Of_Requests",
-    "RelativePath": "api/Type_Of_Requests",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateType_Of_RequestsDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Type_Of_Requests.UpdateType_Of_RequestsDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Type_Of_RequestsController",
     "Method": "GetType_Of_RequestsDetails",
     "RelativePath": "api/Type_Of_Requests/{id_type_of_requests}",
     "HttpMethod": "GET",
@@ -1958,6 +2032,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Type_Of_RequestsController",
+    "Method": "UpdateType_Of_Requests",
+    "RelativePath": "api/Type_Of_Requests/{id_type_of_requests}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_type_of_requests",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateType_Of_RequestsDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Type_Of_Requests.UpdateType_Of_RequestsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Type_Of_RequestsController",
@@ -2023,22 +2118,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Unit_Of_TariffsController",
-    "Method": "UpdateUnit_Of_Tariffs",
-    "RelativePath": "api/Unit_Of_Tariffs",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateUnit_Of_TariffsDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.Unit_Of_Tariffs.UpdateUnit_Of_TariffsDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.Unit_Of_TariffsController",
     "Method": "GetUnit_Of_TariffsDetails",
     "RelativePath": "api/Unit_Of_Tariffs/{id_unit_of_tariffs}",
     "HttpMethod": "GET",
@@ -2062,6 +2141,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.Unit_Of_TariffsController",
+    "Method": "UpdateUnit_Of_Tariffs",
+    "RelativePath": "api/Unit_Of_Tariffs/{id_unit_of_tariffs}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_unit_of_tariffs",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateUnit_Of_TariffsDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.Unit_Of_Tariffs.UpdateUnit_Of_TariffsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.Unit_Of_TariffsController",
@@ -2127,22 +2227,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.User_MemoryController",
-    "Method": "UpdateUser_Memory",
-    "RelativePath": "api/User_Memory",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateUser_MemoryDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.User_Memory.UpdateUser_MemoryDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.User_MemoryController",
     "Method": "GetUser_MemoryDetails",
     "RelativePath": "api/User_Memory/{id_user_memory}",
     "HttpMethod": "GET",
@@ -2166,6 +2250,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.User_MemoryController",
+    "Method": "UpdateUser_Memory",
+    "RelativePath": "api/User_Memory/{id_user_memory}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_user_memory",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateUser_MemoryDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.User_Memory.UpdateUser_MemoryDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.User_MemoryController",
@@ -2231,22 +2336,6 @@
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.UsersController",
-    "Method": "UpdateUsers",
-    "RelativePath": "api/Users",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "updateUsersDto",
-        "Type": "TelegramBot.WebApi.src.EntitiesDto.UsersDto.UpdateUsersDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TelegramBot.WebApi.src.Controllers.UsersController",
     "Method": "GetUsersDetails",
     "RelativePath": "api/Users/{id_users}",
     "HttpMethod": "GET",
@@ -2270,6 +2359,27 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "TelegramBot.WebApi.src.Controllers.UsersController",
+    "Method": "UpdateUsers",
+    "RelativePath": "api/Users/{id_users}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id_users",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateUsersDto",
+        "Type": "TelegramBot.WebApi.src.EntitiesDto.UsersDto.UpdateUsersDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "TelegramBot.WebApi.src.Controllers.UsersController",

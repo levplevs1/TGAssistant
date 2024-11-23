@@ -1,4 +1,6 @@
-from utils.save_load import load_user_data, load_document_data
+from utils.save_load import load_document_data
+from database.load import get_user_database, get_service_type_database
+
 
 def search_by_header(header, user_id):
     """
@@ -12,7 +14,7 @@ def search_by_header(header, user_id):
 
     result = ""
     document = load_document_data()
-    user = load_user_data(user_id)
+    user = get_user_database(user_id)
     if user is None:
         print("user none")
 
@@ -22,7 +24,7 @@ def search_by_header(header, user_id):
 
     for el in header:
         print(document)
-        for item in document[user["category_dialog"]]:
+        for item in document[get_service_type_database(user_id)]:
             for key, value in item.items():
                 if key == el:
                     result += value +'\n'
@@ -39,9 +41,9 @@ def extract_headers(user_id):
     headers_list = []
 
     document = load_document_data()
-    user = load_user_data(user_id)
+    user = get_user_database(user_id)
 
-    for item in document[user["category_dialog"]]:
+    for item in document[get_service_type_database(user_id)]:
         for key, _ in item.items():
             headers_list.append(key)
     return headers_list

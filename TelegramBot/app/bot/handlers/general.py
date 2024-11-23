@@ -3,30 +3,23 @@ from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 from app.bot.handlers import last_memory_message_id
 from config import bot
 from telebot import types
-from utils.save_load import save_user_data, load_user_data
+from database.load import get_user_database, add_user_database, get_memory_database
+
 
 @bot.message_handler(commands=['start'])
 def starter(message):
-    #Добавить запись пользователя в БД!!!!!!!!!!!!!!!!!!!!!!
-    #ID пользователя, время, Начальное имя, Конечное имя, Никнейм
 
     user_id = message.from_user.id
-    user_first_name = message.from_user.first_name
 
     # Загружаем данные пользователя или создаем новый файл
-    user_data = load_user_data(user_id)
+    user_data = get_user_database(user_id)
 
     if user_data is None:
-        # Если файла нет, создаем его с пустой памятью
-        user_data = {
-            'user_id': user_id,
-            'first_name': user_first_name,
-            'category_dialog': "",
-            'meter_readings': {},
-            'memory': [],
-            'memory_chat': []
-        }
-        save_user_data(user_id, user_data)
+        first_name = message.from_user.first_name
+        last_name = message.from_user.last_name
+        username = message.from_user.username
+
+        add_user_database(user_id, username, first_name, last_name)
 
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     keyboard.add(KeyboardButton("Вот что я умею"))
@@ -82,8 +75,7 @@ def memory_command(message):
     user_id = message.from_user.id
     # Получение пользователя из БД
     # Получение памяти пользователя
-    user_data = load_user_data(user_id)
-    memory = user_data['memory']
+    memory = get_memory_database(user_id)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     memory_markup = types.InlineKeyboardMarkup()
     count = 0
     for el in memory:
@@ -97,7 +89,7 @@ def memory_command(message):
 @bot.message_handler(commands=['counters'])
 def memory_command(message):
     user_id = message.from_user.id
-    user_data = load_user_data(user_id)
+    user_data = get_user_database(user_id)
     data = user_data.get("meter_readings", {}).get("data", {})
 
     text = 'Показатели счетчиков:\n'

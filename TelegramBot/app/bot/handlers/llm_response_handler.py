@@ -8,9 +8,9 @@ from llm.prompt_manager import get_meter_readings_llm, include_headers_llm, proc
 from config import bot
 from utils.document_utils import extract_headers, search_by_header
 from utils.logs import save_log_to_file
-from utils.save_load import save_memory_chat, save_user_data
-from utils.tokens import validate_count_tokens
+from utils.save_load import save_memory_chat
 from colorama import init, Fore
+from database.load import add_user_database, get_service_type_database, get_memory_database, post_memory_database
 
 init(autoreset=True)
 
@@ -29,7 +29,7 @@ def handle_user_message(message, user_data):
         classify_type = classify_type_llm(message.text)
 
         # Тип запроса - услуга
-        if classify_type and user_data["category_dialog"] == "ЖКХ":
+        if classify_type and get_service_type_database(user_id) == "ЖКХ":
                 bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Рассматриваю запрос на услугу")
 
                 # Запись и валидация счётчиков LLM
@@ -48,7 +48,7 @@ def handle_user_message(message, user_data):
                     try:
                         # Запись счётчиков пользователя
                         user_data['meter_readings'] = meter_readings
-                        save_user_data(user_id, user_data)
+                        add_user_database(user_id, user_data)
                     except Exception as e:
                         print(Fore.RED + f"Ошибка записи показателей в пользователя: {e}")
 
@@ -132,21 +132,16 @@ def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max
             return validate_answer(message, llm_correction_answer, doc_text, user_data, retry_count)
 
 def check_save_user_memory(message, user_data):
-    if not validate_count_tokens(message.text, 785):
-        memory = user_data.get('memory', [])  # Загружаем память пользователя
+    if len(message.text) <= 249:
         user_id = user_data.get('user_id', None)
 
         if message.text.startswith('/запомни'):
             # Если память полна, выводим сообщение
-            if len(memory) >= 10:
-                bot.send_message(message.chat.id, "Память переполнена! Очистите лишнее с помощью команды 'память'")
-                return
 
             memory_response = memory_validation_llm(message.text)
             print(f"Рез-тат валидации памяти: {memory_response}")
             if memory_response["is_acceptable"]:
-                user_data['memory'].append(memory_response["compressed_text"])  # Обновляем память в данных пользователя
-                save_user_data(user_id, user_data)  # Сохраняем изменения в БД
+                post_memory_database(user_id, memory_response["compressed_text"], '', True)
                 bot.send_message(message.chat.id, "Память обновлена")
             else:
                 bot.send_message(message.chat.id, "Ваш запрос содержит информацию, которая не может быть сохранена, так как она нарушает правила допустимого содержания или произошла ошибка во время операции. Пожалуйста, убедитесь, что информация является корректной, не содержит неподобающих деталей или запрещенных тем.")
