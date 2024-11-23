@@ -89,7 +89,7 @@ def process_request(data: dict):
         return None
 
 @log_step("process_user_request")
-def process_user_request(user_text, user_data, document=None, comment_text=''):
+def process_user_request(user_text, user_data, memory_chat, memory_request, category_dialog, meter_readings, document=None, comment_text=''):
     """Функция формирования ответа от LLM пользователю
     :param comment_text: Комментарий для LLM. По умолчанию отсутствует.
     :param document: Документ (база знаний) для анализа LLM. По умолчанию отсутствует.
@@ -130,11 +130,11 @@ def process_user_request(user_text, user_data, document=None, comment_text=''):
             f"{comment_text}",
     user_instructions =
         "Ты — профессиональный консультант по госуслугам. Ответь на запрос пользователя на основе следующих данных:\n"
-        f"История диалога: {user_data.get('memory_chat', 'Нет данных')}\n"
-        f"Информация о пользователе: {user_data.get('memory', 'Нет сохранённых данных')}\n"
+        f"История диалога: {memory_chat}\n"
+        f"Информация о пользователе: {memory_request}\n"
         f"Документ для анализа:\n{document_text}\n"
-        f"Текущая категория обсуждения: {user_data.get('category_dialog', 'Не задано')}\n"
-        f"Показания счётчика пользователя (используй если нужно в контексте): {user_data.get('meter_readings', "")}"
+        f"Текущая категория обсуждения: {category_dialog}\n"
+        f"Показания счётчика пользователя (используй если нужно в контексте): {meter_readings}"
         "ВАЖНО: Если запрос пользователя не соответствует текущей категории обсуждения, сообщи ему об этом и предложи вернуться к теме.\n"
         f"Запрос пользователя: {user_text}\n\n"
         "Дай ответ строго по теме. Если пользователь просит запомнить информацию, скажи, что ты это сделал. "
@@ -399,6 +399,46 @@ def get_meter_readings_llm(query: str):
             },
             {
                 "role": "user",
+                "content": "отопление 681"
+            },
+            {
+                "role": "assistant",
+                "content": "{\n"
+                           "    'category': 'отопление',\n"
+                           "    'data': {\n"
+                           "        'горячая_вода': null,\n"
+                           "        'холодная_вода': null,\n"
+                           "        'отопление': 23\n"
+                           "        'день': null,\n"
+                           "        'ночь': null,\n"
+                           "        'газ': null,\n"
+                           "    },\n"
+                           "    'error': False,\n"
+                           "    'message': 'Показания успешно сохранены.'\n"
+                           "}"
+            },
+            {
+                "role": "user",
+                "content": "отопление 23"
+            },
+            {
+                "role": "assistant",
+                "content": "{\n"
+                           "    'category': 'отопление',\n"
+                           "    'data': {\n"
+                           "        'горячая_вода': null,\n"
+                           "        'холодная_вода': null,\n"
+                           "        'отопление': 23\n"
+                           "        'день': null,\n"
+                           "        'ночь': null,\n"
+                           "        'газ': null,\n"
+                           "    },\n"
+                           "    'error': False,\n"
+                           "    'message': 'Показания успешно сохранены.'\n"
+                           "}"
+            },
+            {
+                "role": "user",
                 "content": "20 горячая, 36 холодная"
             },
             {
@@ -426,8 +466,8 @@ def get_meter_readings_llm(query: str):
         "   - 'горячая', 'красный' → горячая вода.\n"
         "   - 'холодная', 'синий' → холодная вода.\n"
         "   - 'день', 'ночь', 'электричество' → электричество.\n"
-        "   - 'тепло', 'отопление' → отопление.\n"
-        "   - 'газ', 'объём' → газ.\n"
+        "   - 'отопление', 'отопление' → отопление.\n"
+        "   - 'газ', 'газ' → газ.\n"
         "   - Если ключевые слова пересекаются, например, 'красный' и 'день', то 'красный' имеет приоритет как горячая вода.\n"
         "2. Извлекай числа, которые следуют за ключевыми словами или тесно связаны с ними.\n"
         "3. Проверяй корректность значений:\n"
@@ -460,7 +500,7 @@ def get_meter_readings_llm(query: str):
             },
         ],
         response_format=METER_READINGS_FORMAT,
-        max_tokens=200,
+        max_tokens=250,
         temperature=0.4
     )
 

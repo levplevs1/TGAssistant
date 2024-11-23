@@ -50,7 +50,7 @@ def classify_type_llm(query: str, comment_text='', retry_count=0, max_retries=3)
 
 def process_callback_data(user_id, chat_id, data, classify_type):
     if classify_type is None:
-        if data == 'вода':
+        if data == 'холодная_вода':
             bot.send_message(chat_id, "Напишите:\nОплати воду: горячая вода - (показания со счетчика горячей воды), холодная вода - (показания со счетчика холодной воды воды)")
         elif data == 'электричество':
             bot.send_message(chat_id, "Напишите:\nОплати электричество: день - (показания со счетчика электричества днем), ночь - (показания со счетчика электричества ночью)")
@@ -63,9 +63,9 @@ def process_callback_data(user_id, chat_id, data, classify_type):
     categories = {
 
         "газ": {
-            "check": lambda data: data.get("объём"),
+            "check": lambda data: data.get("газ"),
             "fail_message": "Не удалось распознать показания газа. Напишите показания газа в кубометрах",
-            "success_message": lambda data: f"Газ\nОбъем: {data['объём']}"
+            "success_message": lambda data: f"Газ\nОбъем: {data['газ']}"
         },
 
         "вода": {
@@ -79,15 +79,15 @@ def process_callback_data(user_id, chat_id, data, classify_type):
         },
 
         "отопление": {
-            "check": lambda data: data.get("тепло"),
+            "check": lambda data: data.get("отопление"),
             "fail_message": "Не удалось распознать показания отопления. Напишите показания отопления в Гкал",
-            "success_message": lambda data: f"Отопление\nТепло: {data['тепло']}"
+            "success_message": lambda data: f"Отопление\nТепло: {data['отопление']}"
         },
 
         "электричество": {
-            "check": lambda data: data.get("день"),
+            "check": lambda data: data.get("день") and data.get("ночь"),
             "fail_message": "Не удалось распознать показания электричества. Напишите показания электричества в киловатт-часах",
-            "success_message": lambda data: f"Электричество\nДень: {data['день']}"
+            "success_message": lambda data: f"Электричество\nДень: {data['день']}\nНочь: {data['ночь']}"
         }
     }
 

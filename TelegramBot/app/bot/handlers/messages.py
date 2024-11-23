@@ -99,6 +99,12 @@ def texts(message):
         send_categories(message)
         return
 
+    # Проверяем оказывается ли услуга пользователю
+    if users_status_service.get(user_id, False):
+        bot.send_message(message.chat.id, "Производится оказание услуги")
+        handle_user_message(message, user_data)
+        return
+
     # Проверяем, ожидает ли пользователь ответа
     if waiting_for_response.get(user_id, False):
         bot.send_message(message.chat.id, "Пожалуйста, подождите, пока я обработаю ваш предыдущий запрос.")
@@ -119,8 +125,7 @@ def texts(message):
         bot.send_message(message.chat.id, "Ваше сообщение слишком большое")
         return
 
-    check_save_user_memory(message, user_data)
-
-    forming_response(message,user_data)
+    if check_save_user_memory(message, user_data) is not True:
+        forming_response(message,user_data)
 
 

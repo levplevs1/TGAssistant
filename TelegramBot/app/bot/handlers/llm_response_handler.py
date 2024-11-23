@@ -2,15 +2,16 @@ import threading
 from time import sleep
 from app.bot.handlers import users_status_service, waiting_for_response
 from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response, get_markup_services, \
-    get_keyboard
+    get_keyboard, get_markup_interaction_options
 from llm.prompt_manager import get_meter_readings_llm, include_headers_llm, process_user_request, validation_answer_llm, \
     memory_validation_llm
 from config import bot
 from utils.document_utils import extract_headers, search_by_header
 from utils.logs import save_log_to_file
-from utils.save_load import save_memory_chat
 from colorama import init, Fore
-from database.load import add_user_database, get_service_type_database, get_memory_database, post_memory_database
+from database.load import get_service_type_database, post_memory_database, \
+    get_memory_chat_database, get_memory_request_database, get_meter_readings, save_meter_readings, post_answer_request, \
+    get_counters_data
 
 init(autoreset=True)
 
@@ -37,18 +38,13 @@ def handle_user_message(message, user_data):
                 if meter_readings['category'] != 'unknown':
                     users_status_service[user_id] = meter_readings['category']
 
-                    process_callback_data(user_id, message.chat.id, users_status_service[user_id], meter_readings)
+                    process_callback_data(user_id, message.chat.id, meter_readings['category'], meter_readings)
                     bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
-
-                    # Извлечение ранее переданных показаний счётчиков пользователя
-                    meter_readings_user = user_data.get('meter_readings', None)
-                    print(f"Показатели счётчиков пользователя: {meter_readings_user}")
 
                     # Проверка существования счётчиков
                     try:
                         # Запись счётчиков пользователя
-                        user_data['meter_readings'] = meter_readings
-                        add_user_database(user_id, user_data)
+                        save_meter_readings(user_id, meter_readings['data'])
                     except Exception as e:
                         print(Fore.RED + f"Ошибка записи показателей в пользователя: {e}")
 
@@ -84,8 +80,12 @@ def process_query(user_id, user_data, message):
         # Поиск информации в базе знаний по заголовкам
         doc_text = search_by_header(llm_headers["commands"], user_id)
 
+        memory_chat = get_memory_chat_database(user_id)
+        memory_request = get_memory_request_database(user_id)
+        category_dialog = get_service_type_database(user_id)
+        meter_readings = get_counters_data(user_id)
         # Формирование ответа
-        llm_answer = process_user_request(message.text, user_data, doc_text)
+        llm_answer = process_user_request(message.text, user_data, memory_chat,memory_request,category_dialog, meter_readings, doc_text)
 
         print("Валидация ответа...")
 
@@ -95,7 +95,9 @@ def process_query(user_id, user_data, message):
 
         # Отправка ответа пользователю
         keyboard = get_keyboard(message.from_user.id)
-        bot.send_message(message.chat.id, llm_answer_correction, reply_markup=keyboard)
+        markup = get_markup_interaction_options()
+        bot.send_message(message.chat.id, "Запрос обработан", reply_markup=keyboard)
+        bot.send_message(message.chat.id, llm_answer_correction, reply_markup=markup)
 
 def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max_retries=2):
         # Проверка на превышение количества попыток
@@ -106,11 +108,17 @@ def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max
         validation_llm = validate_response(validation_answer_llm(message.text, llm_answer))
         print(validation_llm)
         if validation_llm[0] is True:
-            save_memory_chat(message, llm_answer)
+            post_answer_request(message.from_user.id, message.text,llm_answer)
             return llm_answer
         else:
             bot.send_message(message.chat.id, "Извините, произошла ошибка при формировании моего ответа. Повторяю попытку")
-            llm_correction_answer = process_user_request(message.text, user_data, doc_text, comment_text=f"""
+
+            memory_chat = get_memory_chat_database(message.from_user.id)
+            memory_request = get_memory_request_database(message.from_user.id)
+            category_dialog = get_service_type_database(message.from_user.id)
+            meter_readings = get_counters_data(message.from_user.id)
+
+            llm_correction_answer = process_user_request(message.text, user_data, memory_chat, memory_request, category_dialog, meter_readings, comment_text=f"""
             
             {validation_llm[0]}\n\n
             
@@ -133,7 +141,7 @@ def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max
 
 def check_save_user_memory(message, user_data):
     if len(message.text) <= 249:
-        user_id = user_data.get('user_id', None)
+        user_id = message.from_user.id
 
         if message.text.startswith('/запомни'):
             # Если память полна, выводим сообщение
@@ -143,6 +151,7 @@ def check_save_user_memory(message, user_data):
             if memory_response["is_acceptable"]:
                 post_memory_database(user_id, memory_response["compressed_text"], '', True)
                 bot.send_message(message.chat.id, "Память обновлена")
+                return True
             else:
                 bot.send_message(message.chat.id, "Ваш запрос содержит информацию, которая не может быть сохранена, так как она нарушает правила допустимого содержания или произошла ошибка во время операции. Пожалуйста, убедитесь, что информация является корректной, не содержит неподобающих деталей или запрещенных тем.")
                 return

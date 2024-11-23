@@ -3,7 +3,8 @@ from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 from app.bot.handlers import last_memory_message_id
 from config import bot
 from telebot import types
-from database.load import get_user_database, add_user_database, get_memory_database
+from database.load import get_user_database, add_user_database, get_memory_database, \
+    get_memory_request_with_ids_filtered, get_counters_data
 
 
 @bot.message_handler(commands=['start'])
@@ -75,12 +76,11 @@ def memory_command(message):
     user_id = message.from_user.id
     # Получение пользователя из БД
     # Получение памяти пользователя
-    memory = get_memory_database(user_id)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    memory = get_memory_request_with_ids_filtered(user_id)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     memory_markup = types.InlineKeyboardMarkup()
-    count = 0
-    for el in memory:
-        memory_markup.add(types.InlineKeyboardButton(el, callback_data=f'{count}'))
-        count += 1
+
+    for key, id_memory in memory.items():
+        memory_markup.add(types.InlineKeyboardButton(key.replace("Пользователь попросил запомнить:","", 1), callback_data=f'{id_memory}'))
 
     # Отправляем сообщение с памятью в виде кнопок и сохраняем его ID
     sent_message = bot.send_message(message.chat.id, "Вот что мы о вас помним:", reply_markup=memory_markup)
@@ -89,8 +89,7 @@ def memory_command(message):
 @bot.message_handler(commands=['counters'])
 def memory_command(message):
     user_id = message.from_user.id
-    user_data = get_user_database(user_id)
-    data = user_data.get("meter_readings", {}).get("data", {})
+    data = get_counters_data(user_id)
 
     text = 'Показатели счетчиков:\n'
 
@@ -107,7 +106,7 @@ def memory_command(message):
                 text += f"{key}: {value}\n"
             else:
                 text += f"{key}: Неуказанно\n"
-        elif key == "День":
+        elif key == "день":
             key = 'День'
             if value is not None:
                 text += f"{key}: {value}\n"
@@ -121,6 +120,12 @@ def memory_command(message):
                 text += f"{key}: Неуказанно\n"
         elif key == "холодная_вода":
             key = 'Холодная вода'
+            if value is not None:
+                text += f"{key}: {value}\n"
+            else:
+                text += f"{key}: Неуказанно\n"
+        elif key == "отопление":
+            key = "Отопление"
             if value is not None:
                 text += f"{key}: {value}\n"
             else:
