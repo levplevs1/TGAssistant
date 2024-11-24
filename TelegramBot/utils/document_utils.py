@@ -1,5 +1,5 @@
 from utils.save_load import load_document_data
-from database.load import get_user_database, get_service_type_database
+from database.load import get_service_type_database
 
 
 def search_by_header(header, user_id):
@@ -14,9 +14,6 @@ def search_by_header(header, user_id):
 
     result = ""
     document = load_document_data()
-    user = get_user_database(user_id)
-    if user is None:
-        print("user none")
 
     header = header.strip()
     header = header.split(', ')
@@ -41,7 +38,6 @@ def extract_headers(user_id):
     headers_list = []
 
     document = load_document_data()
-    user = get_user_database(user_id)
 
     for item in document[get_service_type_database(user_id)]:
         for key, _ in item.items():

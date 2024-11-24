@@ -16,6 +16,24 @@ JSON_DICT_FORMAT = {
     }
 }
 
+JSON_DICT_FORMAT_FROM_QUESTION = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "question_response",
+        "strict": "true",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "commands": {
+                    "type": "string",
+                    "description": "Один наиболее подходящий вопрос из списка или пустая строка, если вопрос не найден.",
+                    "example": "Какие льготы доступны для инвалидов?"
+                }
+            },
+            "required": ["commands1"]
+        }
+    }
+}
 MEMORY_VALIDATION_JSON_FORMAT = {
     "type": "json_schema",
     "json_schema": {

@@ -1,7 +1,7 @@
 from os import path
 from json import load, dump
 import speech_recognition as sr
-from database.load import get_user_database, add_user_database, get_memory_database, get_memory_chat_database
+from database.load import get_memory_database, get_memory_chat_database
 
 
 # Функция для загрузки данных документа

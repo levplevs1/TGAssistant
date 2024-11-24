@@ -4,14 +4,14 @@ from app.bot.handlers import users_status_service, waiting_for_response
 from classifier.base_classifier import classify_type_llm, process_callback_data, validate_response, get_markup_services, \
     get_keyboard, get_markup_interaction_options
 from llm.prompt_manager import get_meter_readings_llm, include_headers_llm, process_user_request, validation_answer_llm, \
-    memory_validation_llm
+    memory_validation_llm, include_question_llm
 from config import bot
 from utils.document_utils import extract_headers, search_by_header
 from utils.logs import save_log_to_file
 from colorama import init, Fore
 from database.load import get_service_type_database, post_memory_database, \
     get_memory_chat_database, get_memory_request_database, get_meter_readings, save_meter_readings, post_answer_request, \
-    get_counters_data
+    get_counters_data, get_question, get_content_by_question, get_heading, get_content_by_heading
 
 init(autoreset=True)
 
@@ -55,9 +55,26 @@ def handle_user_message(message, user_data):
         else:
             bot.edit_message_text(chat_id=sent_message.chat.id, message_id=sent_message.message_id, text="Формирую ответ на вопрос")
 
-            # Тип запроса - вопрос
-            process_query(user_id, user_data, message)
-            bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
+            # Извлечение заголовков LLM из запроса пользователя
+            questions = get_question()
+            question = include_question_llm(message.text, questions)
+
+            if question['commands'] != '':
+                service_type = get_service_type_database(user_id)
+                if service_type == "ЖКХ" and get_content_by_question(question['commands']) is not None:
+                    post_answer_request(message.from_user.id, message.text, question['commands'])
+                    keyboard = get_keyboard(message.from_user.id)
+                    markup = get_markup_interaction_options()
+                    bot.send_message(message.chat.id, "Запрос обработан", reply_markup=keyboard)
+                    bot.send_message(message.chat.id, get_content_by_question(question['commands']), reply_markup=markup)
+                else:
+                    # Тип запроса - вопрос
+                    process_query(user_id, user_data, message)
+                    bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
+            else:
+                # Тип запроса - вопрос
+                process_query(user_id, user_data, message)
+                bot.delete_message(chat_id=sent_message.chat.id, message_id=sent_message.message_id)
 
     save_log_to_file()
     waiting_for_response[user_id] = False
@@ -72,13 +89,12 @@ def forming_response(message, user_data):
 def process_query(user_id, user_data, message):
 
         # Получение всех заголовков из базы знаний
-        headers = extract_headers(user_id)
+        headers = get_heading()
 
-        # Извлечение заголовков LLM из запроса пользователя
         llm_headers = include_headers_llm(message.text, headers)
 
         # Поиск информации в базе знаний по заголовкам
-        doc_text = search_by_header(llm_headers["commands"], user_id)
+        doc_text = get_content_by_heading(llm_headers["commands"])
 
         memory_chat = get_memory_chat_database(user_id)
         memory_request = get_memory_request_database(user_id)
@@ -139,7 +155,7 @@ def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max
             print(retry_count)
             return validate_answer(message, llm_correction_answer, doc_text, user_data, retry_count)
 
-def check_save_user_memory(message, user_data):
+def check_save_user_memory(message):
     if len(message.text) <= 249:
         user_id = message.from_user.id
 

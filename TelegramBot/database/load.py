@@ -3,12 +3,16 @@ from database import DATABASE_URL
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 """https://localhost:7271 6868507062 {DATABASE_URL}"""
+DATABASE_URL = "https://localhost:7271"
 def add_user_database(id_user, username, first_name, last_name):
     # Проверка и замена значений None на 1
     id_user, username, first_name, last_name = (
         'None' if value is None else value for value in [id_user, username, first_name, last_name]
     )
-
+    print(f"id_user:{id_user}")
+    print(f"username:{username}")
+    print(f"first_name:{first_name}")
+    print(f"last_name:{last_name}")
     # Данные пользователя для добавления
     data = {
         "id_telegram": id_user,
@@ -29,7 +33,6 @@ def add_user_database(id_user, username, first_name, last_name):
 
 def get_id_users(user_id):
     url_get = f"{DATABASE_URL}/api/Users"
-
     try:
         response = requests.get(url_get, verify=False)
         if response.status_code == 200:
@@ -299,42 +302,98 @@ def post_memory_database(user_id, request, answer, is_command=False):
 def get_service_type_database(user_id):
     # Проверка и замена значений None на 'None'
 
+    url_get = f"{DATABASE_URL}/api/Requests"
+
     id_user = get_id_users(user_id)
 
-    # Отправка PUT-запроса с JSON-данными
     try:
-        response = requests.get(f"{DATABASE_URL}/api/Service_Type",  params={"id": id_user}, verify=False)  # verify=False отключает SSL для разработки
+        response = requests.get(url_get, verify=False)
         if response.status_code == 200:
-            print("User updated successfully:", response.json())
-            return response.json()['service_Type'][-1]['service_type_name']
-        elif response.status_code == 404:
-            print("User not found. Update failed:", response.status_code, response.text)
-        else:
-            print("Failed to update user:", response.status_code, response.text)
-    except requests.exceptions.RequestException as e:
-        print("Request failed:", e)
+            services_types = response.json()
+            service_type = services_types.get("requests", [])
 
-def post_service_type_database(user_id, service_type_name, id_housing_and_communal_services=1):
+            if not service_type:
+                return None
+
+            for request in service_type:
+                if request.get("id_users") == id_user:
+                    return request.get("request_text")
+
+            # Если совпадений не найдено
+            return None
+        else:
+            print("Ответы не найдены:", response.status_code, response.text)
+            return None
+    except requests.exceptions.RequestException as e:
+        print("Ошибка запроса:", e)
+        return None
+
+def post_service_type_database(user_id, service_type_name):
     # Проверка и замена значений None на 'None'
 
     id_user = get_id_users(user_id)
 
-    # Данные пользователя для обновления
     data = {
-        "service_type_name": service_type_name,
-        "id_housing_and_communal_services": id_housing_and_communal_services,
+        "request_text": service_type_name,
+        "response": 'None',
+        "id_type_of_requests": 3,
+        "id_users": id_user
 
     }
+
+    if get_service_type_database(user_id) is None:
+        # Данные пользователя для обновления
+        try:
+            response = requests.post(f"{DATABASE_URL}/api/Requests", json=data,verify=False)  # verify=False отключает SSL для разработки
+            if response.status_code == 200:
+                print("User updated successfully:", response.json())
+            elif response.status_code == 404:
+                print("User not found. Update failed:", response.status_code, response.text)
+            else:
+                print("Failed to update user:", response.status_code, response.text)
+        except requests.exceptions.RequestException as e:
+            print("Request failed:", e)
+    else:
+        id_requests = get_id_service_type_database(user_id)
+        try:
+            response = requests.put(f"{DATABASE_URL}/api/Requests/{id_requests}", json=data,verify=False)  # verify=False отключает SSL для разработки
+            if response.status_code == 200:
+                print("User updated successfully:", response.json())
+            elif response.status_code == 404:
+                print("User not found. Update failed:", response.status_code, response.text)
+            else:
+                print("Failed to update user:", response.status_code, response.text)
+        except requests.exceptions.RequestException as e:
+            print("Request failed:", e)
+
+def get_id_service_type_database(user_id):
+    # Проверка и замена значений None на 'None'
+
+    url_get = f"{DATABASE_URL}/api/Requests"
+
+    id_user = get_id_users(user_id)
+
     try:
-        response = requests.post(f"{DATABASE_URL}/api/Service_Type", params={"id": id_user}, json=data,verify=False)  # verify=False отключает SSL для разработки
+        response = requests.get(url_get, verify=False)
         if response.status_code == 200:
-            print("User updated successfully:", response.json())
-        elif response.status_code == 404:
-            print("User not found. Update failed:", response.status_code, response.text)
+            services_types = response.json()
+            service_type = services_types.get("requests", [])
+
+            if not service_type:
+                return None
+
+            for request in service_type:
+                if request.get("id_users") == id_user:
+                    return request.get("id_requests")
+
+            # Если совпадений не найдено
+            return None
         else:
-            print("Failed to update user:", response.status_code, response.text)
+            print("Ответы не найдены:", response.status_code, response.text)
+            return None
     except requests.exceptions.RequestException as e:
-        print("Request failed:", e)
+        print("Ошибка запроса:", e)
+        return None
 
 def post_housing_and_communal_services_database(name_service):
 
@@ -468,25 +527,25 @@ def get_meter_readings(user_id):
                 response_meters = requests.get(f"{url_get_meters}/{id_meters}", verify=False)
                 if response_meters.status_code == 200:
                     meter_data = response_meters.json()
-                    id_meter_type = meter_data.get("id_meter_type")
+                    if meter_data['id_users'] == id_user:
+                        id_meter_type = meter_data.get("id_meter_type")
+                        if id_meter_type is not None :
+                            # Получаем имя типа счётчика
+                            meter_type_name = get_meter_type_name(id_meter_type)
+                            if meter_type_name:
+                                # Обработка значения показаний
+                                readings_value = reading["readings_value"]
+                                if readings_value is not None and readings_value.lower() != "none":
+                                    readings_value = float(readings_value)
+                                else:
+                                    readings_value = None
 
-                    if id_meter_type is not None:
-                        # Получаем имя типа счётчика
-                        meter_type_name = get_meter_type_name(id_meter_type)
-                        if meter_type_name:
-                            # Обработка значения показаний
-                            readings_value = reading["readings_value"]
-                            if readings_value is not None and readings_value.lower() != "none":
-                                readings_value = float(readings_value)
+                                # Заполняем словарь значением показаний
+                                result[meter_type_name] = readings_value
                             else:
-                                readings_value = None
-
-                            # Заполняем словарь значением показаний
-                            result[meter_type_name] = readings_value
-                        else:
-                            print(f"Meter type name not found for id_meter_type={id_meter_type}")
+                                print(f"Meter type name not found for id_meter_type={id_meter_type}")
                     else:
-                        print(f"id_meter_type not found for id_meters={id_meters}")
+                        print(f"Счетчик не принадлежит пользователю")
                 else:
                     print(f"Failed to get meter data for id_meters={id_meters}: {response_meters.status_code}, {response_meters.text}")
 
@@ -549,3 +608,102 @@ def post_answer_request(user_id, request, answer):
         delete_memory_by_index(first_value)
 
     post_memory_database(user_id, request, answer)
+
+def get_heading():
+
+    url_get = f"{DATABASE_URL}/api/Articles_Housing_Code"
+
+    #service_type = get_service_type_database(user_id)
+
+    try:
+        response = requests.get(url_get, verify=False)
+        if response.status_code == 200:
+            headings_text = response.json()
+            headings = headings_text.get("articles_Housing_Code", [])
+            if headings == []:
+                return None
+
+            headings = [heading["articles_housing_code_name"] for heading in headings]
+
+            return headings
+        else:
+            print("Headings not found:", response.status_code, response.text)
+            return None
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
+        return None
+
+def get_content_by_heading(headings):
+    url_get = f"{DATABASE_URL}/api/Articles_Housing_Code"
+
+    try:
+        response = requests.get(url_get, verify=False)
+        if response.status_code == 200:
+            question_answer = response.json()
+            questions = question_answer.get("quick_Answers_hcs", [])
+
+            if not questions:
+                return None
+            result = []
+            # Поиск по "quick_answers_hcs_name"
+            for el in headings:
+                for article in questions:
+                    if article.get("quick_answers_hcs_name") == el:
+                        result.append(article.get("quick_answers_hcs_content"))
+            return result
+        else:
+            print("Ответы не найдены:", response.status_code, response.text)
+            return None
+    except requests.exceptions.RequestException as e:
+        print("Ошибка запроса:", e)
+        return None
+
+def get_question():
+
+    url_get = f"{DATABASE_URL}/api/Quick_Answers_hcs"
+
+    try:
+        response = requests.get(url_get, verify=False)
+        if response.status_code == 200:
+            question_answer = response.json()
+            question = question_answer.get("quick_Answers_hcs", [])
+
+            if question == []:
+                return None
+
+            question = [article["quick_answers_hcs_name"] for article in question]
+
+            return question
+        else:
+            print("Headings not found:", response.status_code, response.text)
+            return None
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
+        return None
+
+def get_content_by_question(question_name):
+    url_get = f"{DATABASE_URL}/api/Quick_Answers_hcs"
+
+    try:
+        response = requests.get(url_get, verify=False)
+        if response.status_code == 200:
+            question_answer = response.json()
+            questions = question_answer.get("quick_Answers_hcs", [])
+
+            if not questions:
+                return None
+
+            # Поиск по "quick_answers_hcs_name"
+            for article in questions:
+                if article.get("quick_answers_hcs_name") == question_name:
+                    return article.get("quick_answers_hcs_content")
+
+            # Если совпадений не найдено
+            return None
+        else:
+            print("Ответы не найдены:", response.status_code, response.text)
+            return None
+    except requests.exceptions.RequestException as e:
+        print("Ошибка запроса:", e)
+        return None
+

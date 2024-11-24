@@ -3,8 +3,7 @@ from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 from app.bot.handlers import last_memory_message_id
 from config import bot
 from telebot import types
-from database.load import get_user_database, add_user_database, get_memory_database, \
-    get_memory_request_with_ids_filtered, get_counters_data
+from database.load import add_user_database, get_memory_request_with_ids_filtered, get_counters_data, get_id_users
 
 
 @bot.message_handler(commands=['start'])
@@ -13,9 +12,8 @@ def starter(message):
     user_id = message.from_user.id
 
     # Загружаем данные пользователя или создаем новый файл
-    user_data = get_user_database(user_id)
 
-    if user_data is None:
+    if get_id_users(user_id) is None:
         first_name = message.from_user.first_name
         last_name = message.from_user.last_name
         username = message.from_user.username

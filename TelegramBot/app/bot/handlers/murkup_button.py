@@ -4,7 +4,7 @@ from config import bot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from app.bot.handlers import users_status_service, waiting_for_response, last_memory_message_id
 from utils.save_load import search_query_by_response
-from database.load import get_user_database, add_user_database, post_service_type_database, get_memory_database, \
+from database.load import get_user_database, post_service_type_database, \
     delete_memory_by_index, get_memory_request_with_ids_filtered
 
 

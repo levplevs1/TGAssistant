@@ -125,7 +125,7 @@ def texts(message):
         bot.send_message(message.chat.id, "Ваше сообщение слишком большое")
         return
 
-    if check_save_user_memory(message, user_data) is not True:
+    if check_save_user_memory(message) is not True:
         forming_response(message,user_data)
 
 
