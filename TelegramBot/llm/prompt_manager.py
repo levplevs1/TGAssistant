@@ -185,10 +185,10 @@ def include_headers_llm(user_text, headers_doc):
             if response_dict:
                 return response_dict
             else:
-                return "Не удалось определить заголовки. Попробуйте повторно уточнить у пользователя"
+                return {'commands': "Не удалось определить заголовки. Попробуйте повторно уточнить у пользователя"}
         except json.JSONDecodeError as e:
             print(f"Ошибка декодирования JSON: {e}")
-    return None
+    return {'commands': ''}
 
 @log_step("include_headers_llm")
 def include_question_llm(user_text, questions):
