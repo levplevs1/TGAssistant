@@ -61,12 +61,14 @@ def handle_user_message(message, user_data):
 
             if question['commands'] != '':
                 service_type = get_service_type_database(user_id)
-                if service_type == "ЖКХ" and get_content_by_question(question['commands']) is not None:
+                content_by_question = get_content_by_question(question['commands'])
+                if service_type == "ЖКХ" and content_by_question is not None:
                     post_answer_request(message.from_user.id, message.text, question['commands'])
                     keyboard = get_keyboard(message.from_user.id)
                     markup = get_markup_interaction_options()
+                    post_answer_request(message.from_user.id, message.text, content_by_question)
                     bot.send_message(message.chat.id, "Запрос обработан", reply_markup=keyboard)
-                    bot.send_message(message.chat.id, get_content_by_question(question['commands']), reply_markup=markup)
+                    bot.send_message(message.chat.id, content_by_question, reply_markup=markup)
                 else:
                     # Тип запроса - вопрос
                     process_query(user_id, user_data, message)
