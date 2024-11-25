@@ -227,10 +227,10 @@ def include_question_llm(user_text, questions):
             if response_dict:
                 return response_dict
             else:
-                return "Не удалось определить заголовки. Попробуйте повторно уточнить у пользователя"
+                return {'commands': "Не удалось определить заголовки. Попробуйте повторно уточнить у пользователя"}
         except json.JSONDecodeError as e:
             print(f"Ошибка декодирования JSON: {e}")
-    return None
+    return {'commands': ''}
 
 @log_step("classify_query_with_llm")
 def classify_query_with_llm(query: str, comment_text=''):
