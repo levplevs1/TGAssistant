@@ -258,6 +258,13 @@ TELEGRAMBOT_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
    Add-Migration Name
 ## Шаг 4: Запустите базу данных
 1. После команды запустите проект в Visual Studio
+   
+## Шаг 5: Сохраните адрес базы данных
+1. После запуска вас перенаправит на страницу Swagger, скопируйте ссылку до /index.html
+2. Скопированую ссылку вставьте в `.env`
+```bash
+DATABASE_URL=https://localhost:7271
+```
 
 
 ## Запуск
