@@ -23,16 +23,16 @@ pip install -r requirements.txt
 ## Шаг 1: Установка LM Studio
 1. Перейдите на официальный сайт [LM Studio](https://lmstudio.ai).
 2. Скачайте подходящую версию для вашей операционной системы:
-   - Для Windows: `lmstudio-windows-x64.zip`
-   - Для macOS: `lmstudio-macos-x64.dmg`
-   - Для Linux: `lmstudio-linux-x64.AppImage`
+   - Для Windows: `LM-Studio-Setup.exe`
+   - Для macOS: `LM-Studio-arm64.dmg`
+   - Для Linux: `LM_Studio.AppImage`
 3. Установите LM Studio:
-   - **Windows**: Разархивируйте скачанный архив и запустите `LMStudio.exe`.
+   - **Windows**: Запустите `LMStudio.exe`.
    - **macOS**: Откройте `.dmg` файл и перенесите LM Studio в папку `Программы`.
    - **Linux**: Дайте файлу права на выполнение и запустите:
      ```bash
-     chmod +x lmstudio-linux-x64.AppImage
-     ./lmstudio-linux-x64.AppImage
+     chmod +x LM_Studio.AppImage
+     ./LM_Studio.AppImage
      ```
 
 ---
