@@ -151,19 +151,19 @@ Use this token to access the HTTP API: 123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 ```bash
 TELEGRAMBOT_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 ```
-## Шаг 4: инструкция по настройке бэкенда и логирования
 
-## 1. Убедитесь, что используется правильная версия Visual Studio
-- Проект требует **Visual Studio 2022** или выше.
-- Если Visual Studio не установлена:
-  1. Скачайте и установите последнюю версию с [официального сайта Visual Studio](https://visualstudio.microsoft.com/).
-  2. При установке выберите рабочую нагрузку **ASP.NET и разработка веб-приложений**.
 
 ---
 
 ## 2. Настройка проекта
 
 # Инструкция по импорту скрипта `script_tg_bot.sql` в Microsoft SQL Server
+
+## Убедитесь, что используется правильная версия Visual Studio
+- Проект требует **Visual Studio 2022** или выше.
+- Если Visual Studio не установлена:
+1. Скачайте и установите последнюю версию с [официального сайта Visual Studio](https://visualstudio.microsoft.com/).
+2. При установке выберите рабочую нагрузку **ASP.NET и разработка веб-приложений**.
 
 ## Шаг 1: Подготовка
 1. Убедитесь, что Microsoft SQL Server установлен и запущен на вашем компьютере.
