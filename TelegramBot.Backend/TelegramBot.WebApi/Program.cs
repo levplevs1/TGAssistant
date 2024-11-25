@@ -39,8 +39,8 @@ builder.Services.AddCors(options =>
 Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .WriteTo.TeleSink(
-                telegramApiKey: "8084897678:AAHpLHbqeCkZbFmJwe4LD50n5bvmZY4q36k",
-                telegramChatId: "1271362249")
+                telegramApiKey: "*key",
+                telegramChatId: "*id")
                 .CreateLogger();
 
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
