@@ -167,9 +167,10 @@ TELEGRAMBOT_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 ---
 
 ## Шаг 3: Импорт файла `script_tg_bot.sql`
-1. Перейдите в **File > Open > File** (или нажмите `Ctrl + O`).
-2. Найдите и выберите файл `script_tg_bot.sql` на вашем компьютере.
-3. Откроется текст скрипта в новом окне редактора в SSMS.
+1. Установите [script_tg_bot.sql](https://disk.yandex.ru/d/Ot87_SwlEtIVQw)
+2. Перейдите в **File > Open > File** (или нажмите `Ctrl + O`).
+3. Найдите и выберите файл `script_tg_bot.sql` на вашем компьютере.
+4. Откроется текст скрипта в новом окне редактора в SSMS.
 
 ---
 
@@ -260,11 +261,45 @@ TELEGRAMBOT_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 
 
 ## Запуск
-Запустите приложение:
+# Инструкция по запуску Telegram-бота
+
+Для успешного запуска Telegram-бота выполните следующие шаги.
+
+---
+
+## 1. Убедитесь, что виртуальное окружение активировано
+Виртуальное окружение должно быть активировано для использования зависимостей проекта. Чтобы проверить активацию:
+
+- В командной строке должно отображаться что-то вроде:
+
+(.venv) C:\Projects\Github\TGAssistant\TelegramBot
+
+Если окружение не активировано:
+- Для Windows выполните:
+  ```bash
+  .venv\Scripts\activate
+  ```
+- Для Linux/MacOS выполните:
+  ```bash
+  source .venv/bin/activate
+  ```
+
+---
+
+## 2. Перейдите в корневую директорию проекта
+В командной строке перейдите в папку с проектом:
 ```bash
-python main.py
+cd C:\Projects\Github\TGAssistant\TelegramBot
 ```
 
+## 3. Запустите проект
+```bash
+python -m app.bot.main
+```
+
+Если бот запущен успешно, вы увидите сообщение в терминале:
+
+`The bot has been successfully launched`
 
 
 
