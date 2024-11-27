@@ -1,6 +1,9 @@
 # AssisGov
 ## Описание
 Данный проект представляет собой бота, который принимает показания счётчиков, обрабатывает запросы пользователей и предоставляет ответы на вопросы, связанные с показаниями.
+
+## Методика тестирования - [скачать](https://disk.yandex.ru/i/8jcl-qV0yZCWCA)
+
 ## Установка
 1. Склонируйте репозиторий:
 ```bash
@@ -20,16 +23,16 @@ pip install -r requirements.txt
 ## Шаг 1: Установка LM Studio
 1. Перейдите на официальный сайт [LM Studio](https://lmstudio.ai).
 2. Скачайте подходящую версию для вашей операционной системы:
-   - Для Windows: `lmstudio-windows-x64.zip`
-   - Для macOS: `lmstudio-macos-x64.dmg`
-   - Для Linux: `lmstudio-linux-x64.AppImage`
+   - Для Windows: `LM-Studio-Setup.exe`
+   - Для macOS: `LM-Studio-arm64.dmg`
+   - Для Linux: `LM_Studio.AppImage`
 3. Установите LM Studio:
-   - **Windows**: Разархивируйте скачанный архив и запустите `LMStudio.exe`.
+   - **Windows**: Запустите `LMStudio.exe`.
    - **macOS**: Откройте `.dmg` файл и перенесите LM Studio в папку `Программы`.
    - **Linux**: Дайте файлу права на выполнение и запустите:
      ```bash
-     chmod +x lmstudio-linux-x64.AppImage
-     ./lmstudio-linux-x64.AppImage
+     chmod +x LM_Studio.AppImage
+     ./LM_Studio.AppImage
      ```
 
 ---
@@ -148,19 +151,19 @@ Use this token to access the HTTP API: 123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 ```bash
 TELEGRAMBOT_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 ```
-## Шаг 4: инструкция по настройке бэкенда и логирования
 
-## 1. Убедитесь, что используется правильная версия Visual Studio
-- Проект требует **Visual Studio 2022** или выше.
-- Если Visual Studio не установлена:
-  1. Скачайте и установите последнюю версию с [официального сайта Visual Studio](https://visualstudio.microsoft.com/).
-  2. При установке выберите рабочую нагрузку **ASP.NET и разработка веб-приложений**.
 
 ---
 
 ## 2. Настройка проекта
 
 # Инструкция по импорту скрипта `script_tg_bot.sql` в Microsoft SQL Server
+
+## Убедитесь, что используется правильная версия Visual Studio
+- Проект требует **Visual Studio 2022** или выше.
+- Если Visual Studio не установлена:
+1. Скачайте и установите последнюю версию с [официального сайта Visual Studio](https://visualstudio.microsoft.com/).
+2. При установке выберите рабочую нагрузку **ASP.NET и разработка веб-приложений**.
 
 ## Шаг 1: Подготовка
 1. Убедитесь, что Microsoft SQL Server установлен и запущен на вашем компьютере.
@@ -244,13 +247,13 @@ TELEGRAMBOT_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 
 ## Шаг 2: Выберите запускаемый проект
 1. В открывшемся окне настроек выберите опцию **Один запускаемый проект**.
-2. В выпадающем списке выберите проект **TelegramBot.Domain**.
+2. В выпадающем списке выберите проект **TelegramBot.WebApi**.
 
 ---
 
 ## Шаг 3: Сохраните изменения
 1. Нажмите кнопку **ОК**, чтобы сохранить изменения.
-2. Теперь проект **TelegramBot.Domain** будет запускаться при нажатии на кнопку **Run** (или `F5`).
+2. Теперь проект **TelegramBot.WebApi** будет запускаться при нажатии на кнопку **Run** (или `F5`).
 
 # Инструкция: Как выбрать проект по умолчанию в консоли диспетчера пакетов и выполнить команду
 
@@ -262,7 +265,7 @@ TELEGRAMBOT_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ12345
 
 ## Шаг 2: Выберите проект по умолчанию
 1. В правой части консоли диспетчера пакетов найдите выпадающий список с надписью **Проект по умолчанию**.
-2. Нажмите на выпадающий список и выберите **TelegramBot.WebApi**).
+2. Нажмите на выпадающий список и выберите **TelegramBot.Persistence**).
 
 ---
 
