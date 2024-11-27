@@ -3,7 +3,7 @@ from database import DATABASE_URL
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 """https://localhost:7271 6868507062 {DATABASE_URL}"""
-DATABASE_URL = "https://localhost:7271"
+
 def add_user_database(id_user, username, first_name, last_name):
     # Проверка и замена значений None на 1
     id_user, username, first_name, last_name = (
