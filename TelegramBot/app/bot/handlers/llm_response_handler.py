@@ -10,7 +10,7 @@ from utils.document_utils import extract_headers, search_by_header
 from utils.logs import save_log_to_file
 from colorama import init, Fore
 from database.load import get_service_type_database, post_memory_database, \
-    get_memory_chat_database, get_memory_request_database, get_meter_readings, save_meter_readings, post_answer_request, \
+    get_memory_chat_database, get_memory_request_database, save_meter_readings, post_answer_request, \
     get_counters_data, get_question, get_content_by_question, get_heading, get_content_by_heading
 
 init(autoreset=True)
@@ -67,8 +67,9 @@ def handle_user_message(message, user_data):
                     keyboard = get_keyboard(message.from_user.id)
                     markup = get_markup_interaction_options()
                     post_answer_request(message.from_user.id, message.text, content_by_question)
-                    bot.send_message(message.chat.id, "Запрос обработан", reply_markup=keyboard)
-                    bot.send_message(message.chat.id, content_by_question, reply_markup=markup)
+                    sent_message = bot.send_message(chat_id=message.chat.id, text=content_by_question, reply_markup=keyboard)
+                    bot.delete_message(chat_id=message.chat.id, message_id=sent_message.message_id)
+                    bot.send_message(chat_id=message.chat.id, text=content_by_question, reply_markup=markup)
                 else:
                     # Тип запроса - вопрос
                     process_query(user_id, user_data, message)
@@ -106,18 +107,18 @@ def process_query(user_id, user_data, message):
         llm_answer = process_user_request(message.text, user_data, memory_chat,memory_request,category_dialog, meter_readings, doc_text)
 
         print("Валидация ответа...")
-
         # Валидация ответа
-        llm_answer_correction = validate_answer(message, llm_answer, doc_text, user_data)
+        llm_answer_correction = validate_answer(message, llm_answer, doc_text, user_data, meter_readings)
         print(llm_answer_correction)
 
         # Отправка ответа пользователю
         keyboard = get_keyboard(message.from_user.id)
         markup = get_markup_interaction_options()
-        bot.send_message(message.chat.id, "Запрос обработан", reply_markup=keyboard)
-        bot.send_message(message.chat.id, llm_answer_correction, reply_markup=markup)
+        sent_message = bot.send_message(chat_id = message.chat.id, text = llm_answer_correction, reply_markup=keyboard)
+        bot.delete_message(chat_id=message.chat.id, message_id=sent_message.message_id)
+        bot.send_message(chat_id=message.chat.id, text = llm_answer_correction, reply_markup=markup)
 
-def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max_retries=2):
+def validate_answer(message, llm_answer, doc_text, user_data, meter_readings, retry_count=0, max_retries=2):
         # Проверка на превышение количества попыток
         if retry_count > max_retries:
             print("Превышено максимальное количество попыток. Возвращаю None.")
@@ -134,8 +135,6 @@ def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max
             memory_chat = get_memory_chat_database(message.from_user.id)
             memory_request = get_memory_request_database(message.from_user.id)
             category_dialog = get_service_type_database(message.from_user.id)
-            meter_readings = get_counters_data(message.from_user.id)
-
             llm_correction_answer = process_user_request(message.text, user_data, memory_chat, memory_request, category_dialog, meter_readings, comment_text=f"""
             
             {validation_llm[0]}\n\n
@@ -155,7 +154,7 @@ def validate_answer(message, llm_answer, doc_text, user_data, retry_count=0, max
         """)
             retry_count += 1
             print(retry_count)
-            return validate_answer(message, llm_correction_answer, doc_text, user_data, retry_count)
+            return validate_answer(message, llm_correction_answer, doc_text, user_data,meter_readings, retry_count)
 
 def check_save_user_memory(message):
     if len(message.text) <= 249:
